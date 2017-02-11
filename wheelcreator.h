@@ -9,7 +9,7 @@
 
 namespace wheel {
 
-const int POINT_RES = 500;
+const int POINT_RES = 100;
 
 typedef struct Point
 {
@@ -39,6 +39,7 @@ public:
     float getHoleRadius() const;
     int getNumberOfLighteningHole() const;
     Point getPositionOffset() const;
+    int getPointResolution() const;
 
     // Setters
     void setPrimitiveRadius(float r);
@@ -50,6 +51,7 @@ public:
     void setNumberOfLighteningHole(int n);
     void setPositionOffset(Point p);
     void setPositionOffset(float x, float y);
+    void setPointResolution(int n);
 
 protected:
     float primitiveRadius;
@@ -60,6 +62,7 @@ protected:
     float holeRadius;
     int numberOfLighteningHole;
     Point positionOffset;
+    int pointResolution;
 };
 
 }
