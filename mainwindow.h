@@ -8,6 +8,8 @@
 #include <QSvgGenerator>
 #include <QPainter>
 #include <QMessageBox>
+#include <QPrinter>
+#include <QPrintDialog>
 #include "wheelcreator.h"
 
 namespace Ui {
@@ -26,6 +28,7 @@ public:
     void disconnectGui();
     void exportSVG();
     void exportPNG();
+    void exportPDF();
 
 public slots:
     void drawWheel();

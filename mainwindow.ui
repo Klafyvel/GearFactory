@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1104</width>
+    <width>1112</width>
     <height>584</height>
    </rect>
   </property>
@@ -49,9 +49,9 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
-      <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <widget class="QWidget" name="tabWidgetPage1">
        <attribute name="title">
         <string>Gear</string>
        </attribute>
@@ -294,7 +294,7 @@ lightening holes</string>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <widget class="QWidget" name="tabWidgetPage2">
        <attribute name="title">
         <string>Graphics</string>
        </attribute>
@@ -467,7 +467,7 @@ speed</string>
                 <item>
                  <widget class="QLineEdit" name="fileNameLineEdit">
                   <property name="text">
-                   <string>GearFactory.svg</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -490,6 +490,11 @@ speed</string>
              </item>
              <item row="1" column="1">
               <widget class="QComboBox" name="formatComboBox">
+               <item>
+                <property name="text">
+                 <string>PDF</string>
+                </property>
+               </item>
                <item>
                 <property name="text">
                  <string>SVG</string>
@@ -525,7 +530,7 @@ speed</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1104</width>
+     <width>1112</width>
      <height>30</height>
     </rect>
    </property>

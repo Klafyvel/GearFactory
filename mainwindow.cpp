@@ -121,6 +121,13 @@ void MainWindow::chooseExportFileName()
                                                  "gearFactory.png",
                                                  tr("PNG files (*.png)")));
     }
+    else if(ui->formatComboBox->currentText() == "PDF")
+    {
+        ui->fileNameLineEdit->setText(
+                    QFileDialog::getSaveFileName(this, "Save PDF",
+                                                 "gearFactory.pdf",
+                                                 tr("PDF files (*.pdf)")));
+    }
 }
 
 void MainWindow::exportGraphics()
@@ -129,6 +136,8 @@ void MainWindow::exportGraphics()
         MainWindow::exportSVG();
     else if(ui->formatComboBox->currentText() == "PNG")
         MainWindow::exportPNG();
+    else if(ui->formatComboBox->currentText() == "PDF")
+        MainWindow::exportPDF();
     QMessageBox::information(this, "Export", "Image saved.");
 }
 
@@ -161,6 +170,24 @@ void MainWindow::exportSVG()
     scene.render(&painter);
     painter.end();
 
+}
+
+void MainWindow::exportPDF()
+{
+    if (ui->fileNameLineEdit->text() == "")
+        MainWindow::chooseExportFileName();
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(ui->fileNameLineEdit->text());
+
+    QPrintDialog printDialog(&printer, this);
+    if (printDialog.exec() == QDialog::Accepted) {
+        QPainter painter;
+        painter.begin(&printer);
+        scene.render(&painter);
+        painter.end();
+      }
 }
 
 void MainWindow::on_actionShow_Gear_triggered()
