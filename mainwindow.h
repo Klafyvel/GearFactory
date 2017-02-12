@@ -1,15 +1,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <iostream>
+
 #include <QObject>
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QGraphicsScene>
-#include <QSvgGenerator>
 #include <QPainter>
 #include <QMessageBox>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QTextStream>
+#include <QTimer>
 #include "wheelcreator.h"
 
 namespace Ui {
@@ -33,6 +36,7 @@ public:
 public slots:
     void drawWheel();
     void refreshGearsValues();
+
     void setPrimitiveDiameterG1(double d);
     void setExternalDiameterG1(double d);
     void setContactAngleG1(double alpha);
@@ -41,6 +45,20 @@ public slots:
     void setHoleDiameterG1(double d);
     void setNumberOfLighteningHolesG1(int n);
     void setPointResolutionG1(int n);
+
+    void setPrimitiveDiameterG2(double d);
+    void setExternalDiameterG2(double d);
+    void setContactAngleG2(double alpha);
+    void setNumberOfTeethG2(int z);
+    void setToothSpacingG2(double p);
+    void setHoleDiameterG2(double d);
+    void setNumberOfLighteningHolesG2(int n);
+    void setPointResolutionG2(int n);
+
+    void setRotation(double alpha);
+
+    void setAnimation(int state);
+    void animate();
 
     void chooseExportFileName();
     void exportGraphics();
@@ -54,8 +72,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    wheel::WheelCreator wheelCreator;
+    wheel::WheelCreator wheelCreator1;
+    wheel::WheelCreator wheelCreator2;
     QGraphicsScene scene;
+    QTimer timer;
 };
 
 #endif // MAINWINDOW_H

@@ -30,6 +30,8 @@ public:
 
     void computeValues();
 
+    void syncWith(WheelCreator& wheel) const;
+
     // Getters
     float getPrimitiveRadius() const;
     float getExternalRadius() const;
@@ -40,6 +42,7 @@ public:
     int getNumberOfLighteningHole() const;
     Point getPositionOffset() const;
     int getPointResolution() const;
+    float getRotationOffset() const;
 
     // Setters
     void setPrimitiveRadius(float r);
@@ -52,6 +55,7 @@ public:
     void setPositionOffset(Point p);
     void setPositionOffset(float x, float y);
     void setPointResolution(int n);
+    void setRotationOffset(float alpha);
 
 protected:
     float primitiveRadius;
@@ -62,6 +66,7 @@ protected:
     float holeRadius;
     int numberOfLighteningHole;
     Point positionOffset;
+    float rotationOffset;
     int pointResolution;
 };
 

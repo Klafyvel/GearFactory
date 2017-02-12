@@ -46,6 +46,11 @@ Point WheelCreator::getPositionOffset() const
     return this->positionOffset;
 }
 
+float WheelCreator::getRotationOffset() const
+{
+    return this->rotationOffset;
+}
+
 std::vector<Point> WheelCreator::computeATooth(float begin) const
 {
     std::vector<Point>result(0);
@@ -105,7 +110,7 @@ std::vector<Point> WheelCreator::getPoints() const
     std::vector<Point> result(0);
     for(int begin=0; begin<this->numberOfTeeth; begin++)
     {
-        std::vector<Point> tooth = WheelCreator::computeATooth(begin*2*PI/this->numberOfTeeth);
+        std::vector<Point> tooth = WheelCreator::computeATooth(begin*2*PI/this->numberOfTeeth+this->rotationOffset);
         result.insert(result.end(),tooth.begin(), tooth.end());
     }
     return result;
@@ -180,5 +185,18 @@ void WheelCreator::setPositionOffset(Point p)
 void WheelCreator::setPointResolution(int n)
 {
     this->pointResolution = n;
+}
+
+void WheelCreator::setRotationOffset(float alpha)
+{
+    this->rotationOffset = alpha;
+}
+
+void WheelCreator::syncWith(WheelCreator &wheel) const
+{
+    float d = this->primitiveRadius + wheel.primitiveRadius;
+    float r = this->primitiveRadius/wheel.primitiveRadius;
+    wheel.setPositionOffset(this->positionOffset.x+d, this->positionOffset.y);
+    wheel.setRotationOffset((float)(this->numberOfTeeth-wheel.numberOfTeeth+1)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
 }
 }

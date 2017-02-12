@@ -8,12 +8,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->graphicsView->setScene(&scene);
 
-    wheelCreator.setContactAngle(20 * PI / 180);
-    wheelCreator.setNumberOfTeeth(12);
-    wheelCreator.setToothSpacing(50);
-    wheelCreator.setHoleRadius(10);
-    wheelCreator.setPointResolution(100);
-    wheelCreator.computeValues();
+    wheelCreator1.setContactAngle(20 * PI / 180);
+    wheelCreator1.setNumberOfTeeth(12);
+    wheelCreator1.setToothSpacing(50);
+    wheelCreator1.setHoleRadius(10);
+    wheelCreator1.setPointResolution(50);
+    wheelCreator1.computeValues();
+
+    wheelCreator2.setContactAngle(20 * PI / 180);
+    wheelCreator2.setNumberOfTeeth(6);
+    wheelCreator2.setToothSpacing(50);
+    wheelCreator2.setHoleRadius(10);
+    wheelCreator2.setPointResolution(50);
+    wheelCreator2.computeValues();
+
+    wheelCreator1.syncWith(wheelCreator2);
 
     MainWindow::connectGui();
     MainWindow::refreshGearsValues();
@@ -41,12 +50,28 @@ void MainWindow::connectGui()
                      this, SLOT(setHoleDiameterG1(double)));
     QObject::connect(ui->numberOfLighteningHolesSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfLighteningHolesG1(int)));
+    QObject::connect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
+                     this, SLOT(setContactAngleG2(double)));
+    QObject::connect(ui->numberOfTeethSpinBox_2,SIGNAL(valueChanged(int)),
+                     this, SLOT(setNumberOfTeethG2(int)));
+    QObject::connect(ui->toothSpacingDoubleSpinBox,SIGNAL(valueChanged(double)),
+                     this, SLOT(setToothSpacingG2(double)));
+    QObject::connect(ui->holeDiameterDoubleSpinBox_2,SIGNAL(valueChanged(double)),
+                     this, SLOT(setHoleDiameterG2(double)));
+    QObject::connect(ui->numberOfLighteningHolesSpinBox_2,SIGNAL(valueChanged(int)),
+                     this, SLOT(setNumberOfLighteningHolesG2(int)));
     QObject::connect(ui->fileNamePushButton,SIGNAL(clicked()),
                      this, SLOT(chooseExportFileName()));
     QObject::connect(ui->exportPushButton,SIGNAL(clicked()),
                      this, SLOT(exportGraphics()));
     QObject::connect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setPointResolutionG1(int)));
+    QObject::connect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
+                     this, SLOT(setPointResolutionG2(int)));
+    QObject::connect(ui->animateCheckBox,SIGNAL(stateChanged(int)),
+                     this, SLOT(setAnimation(int)));
+    QObject::connect(ui->wheel2GroupBox, SIGNAL(clicked()), this, SLOT(drawWheel()));
+    QObject::connect(ui->rotationDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setRotation(double)));
 }
 
 void MainWindow::disconnectGui()
@@ -65,12 +90,28 @@ void MainWindow::disconnectGui()
                      this, SLOT(setHoleDiameterG1(double)));
     QObject::disconnect(ui->numberOfLighteningHolesSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfLighteningHolesG1(int)));
+    QObject::disconnect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
+                     this, SLOT(setContactAngleG2(double)));
+    QObject::disconnect(ui->numberOfTeethSpinBox_2,SIGNAL(valueChanged(int)),
+                     this, SLOT(setNumberOfTeethG2(int)));
+    QObject::disconnect(ui->toothSpacingDoubleSpinBox,SIGNAL(valueChanged(double)),
+                     this, SLOT(setToothSpacingG2(double)));
+    QObject::disconnect(ui->holeDiameterDoubleSpinBox_2,SIGNAL(valueChanged(double)),
+                     this, SLOT(setHoleDiameterG2(double)));
+    QObject::disconnect(ui->numberOfLighteningHolesSpinBox_2,SIGNAL(valueChanged(int)),
+                     this, SLOT(setNumberOfLighteningHolesG2(int)));
     QObject::disconnect(ui->fileNamePushButton,SIGNAL(clicked()),
                      this, SLOT(chooseExportFileName()));
     QObject::disconnect(ui->exportPushButton,SIGNAL(clicked()),
                      this, SLOT(exportGraphics()));
     QObject::disconnect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setPointResolutionG1(int)));
+    QObject::disconnect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
+                     this, SLOT(setPointResolutionG2(int)));
+    QObject::disconnect(ui->animateCheckBox,SIGNAL(stateChanged(int)),
+                     this, SLOT(setAnimation(int)));
+    QObject::disconnect(ui->wheel2GroupBox, SIGNAL(clicked()), this, SLOT(drawWheel()));
+    QObject::disconnect(ui->rotationDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setRotation(double)));
 }
 
 void MainWindow::on_actionShow_View_triggered()
@@ -82,7 +123,7 @@ void MainWindow::on_actionShow_View_triggered()
 void MainWindow::drawWheel()
 {
     scene.clear();
-    std::vector<wheel::Point> points = wheelCreator.getPoints();
+    std::vector<wheel::Point> points = wheelCreator1.getPoints();
     wheel::Point current = points[0];
     for(wheel::Point next : points)
     {
@@ -90,13 +131,39 @@ void MainWindow::drawWheel()
         current = next;
     }
 
-    wheel::Point center = wheelCreator.getPositionOffset();
-    float r = wheelCreator.getHoleRadius();
+    wheel::Point center = wheelCreator1.getPositionOffset();
+    float r = wheelCreator1.getHoleRadius();
     float cross_size = r*1.5;
     scene.addLine(center.x-cross_size,center.y,center.x+cross_size,center.y);
     scene.addLine(center.x,center.y-cross_size,center.x,center.y+cross_size);
 
     scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+
+    r = wheelCreator1.getPrimitiveRadius();
+    if(!!ui->showPrimitiveCircleCheckBox->checkState())
+        scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+
+    if(!ui->wheel2GroupBox->isChecked())
+        return;
+
+    std::vector<wheel::Point> points2 = wheelCreator2.getPoints();
+    current = points2[0];
+    for(wheel::Point next : points2)
+    {
+        scene.addLine(current.x, current.y, next.x, next.y);
+        current = next;
+    }
+
+    center = wheelCreator2.getPositionOffset();
+    r = wheelCreator2.getHoleRadius();
+    float cross_size2 = r*1.5;
+    scene.addLine(center.x-cross_size2,center.y,center.x+cross_size2,center.y);
+    scene.addLine(center.x,center.y-cross_size2,center.x,center.y+cross_size2);
+
+    scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+    r = wheelCreator2.getPrimitiveRadius();
+    if(!!ui->showPrimitiveCircleCheckBox->checkState())
+        scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
 }
 
 void MainWindow::on_actionExport_triggered()
@@ -138,7 +205,6 @@ void MainWindow::exportGraphics()
         MainWindow::exportPNG();
     else if(ui->formatComboBox->currentText() == "PDF")
         MainWindow::exportPDF();
-    QMessageBox::information(this, "Export", "Image saved.");
 }
 
 void MainWindow::exportPNG()
@@ -153,23 +219,107 @@ void MainWindow::exportPNG()
     scene.render(&painter);
     painter.end();
     image.save(ui->fileNameLineEdit->text());
+
+    QMessageBox::information(this, "Export", "Image saved.");
 }
 
 void MainWindow::exportSVG()
 {
     if (ui->fileNameLineEdit->text() == "")
         MainWindow::chooseExportFileName();
-    QSvgGenerator generator;
-    generator.setFileName(ui->fileNameLineEdit->text());
-    generator.setSize(QSize(scene.width(), scene.height()));
-    generator.setViewBox(QRect(0, 0, scene.width(), scene.height()));
-    generator.setTitle("SVG Example");
-    generator.setDescription("File created by SVG Example");
-    QPainter painter;
-    painter.begin(&generator);
-    scene.render(&painter);
-    painter.end();
+    QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
+    result.append("<svg width=\"");
+    result.append(QString::number(this->wheelCreator1.getExternalRadius()*2));
+    result.append("mm\" height=\"");
+    result.append(QString::number(this->wheelCreator1.getExternalRadius()*2));
+    result.append("mm\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"  version=\"1.2\" baseProfile=\"tiny\">\n");
+    result.append("<title>Gear factory</title>\n");
+    result.append("<desc>File created by Gear Factory.</desc>\n");
 
+    result.append("<g>\n");
+
+    float r_ext = this->wheelCreator1.getExternalRadius();
+
+    // Tooth
+    result.append("<g>\n");
+    wheel::Point previous;
+    wheel::Point first;
+    bool isFirst = true;
+    for(wheel::Point p : this->wheelCreator1.getPoints())
+    {
+        if(isFirst)
+        {
+            isFirst = false;
+            first = p;
+        }
+        else
+        {
+            result.append("<line x1=\"");
+            result.append(QString::number(previous.x + r_ext));
+            result.append("mm\" y1=\"");
+            result.append(QString::number(previous.y + r_ext));
+            result.append("mm\" x2=\"");
+            result.append(QString::number(p.x + r_ext));
+            result.append("mm\" y2=\"");
+            result.append(QString::number(p.y + r_ext));
+            result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
+        }
+
+        previous = p;
+    }
+    result.append("<line x1=\"");
+    result.append(QString::number(previous.x + r_ext));
+    result.append("mm\" y1=\"");
+    result.append(QString::number(previous.y + r_ext));
+    result.append("mm\" x2=\"");
+    result.append(QString::number(first.x + r_ext));
+    result.append("mm\" y2=\"");
+    result.append(QString::number(first.y + r_ext));
+    result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
+    result.append("</g>\n");
+
+    // Center
+    result.append("<circle cx=\"");
+    result.append(QString::number(r_ext));
+    result.append("mm\" cy=\"");
+    result.append(QString::number(r_ext));
+    result.append("mm\" r=\"");
+    result.append(QString::number(this->wheelCreator1.getHoleRadius()));
+    result.append("mm\" stroke=\"black\" fill=\"none\"/>\n");
+
+    result.append("<line x1=\"");
+    result.append(QString::number(r_ext));
+    result.append("mm\" y1=\"");
+    result.append(QString::number(r_ext-1.5*this->wheelCreator1.getHoleRadius()));
+    result.append("mm\" x2=\"");
+    result.append(QString::number(r_ext));
+    result.append("mm\" y2=\"");
+    result.append(QString::number(r_ext+1.5*this->wheelCreator1.getHoleRadius()));
+    result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
+    result.append("<line x1=\"");
+    result.append(QString::number(r_ext-1.5*this->wheelCreator1.getHoleRadius()));
+    result.append("mm\" y1=\"");
+    result.append(QString::number(r_ext));
+    result.append("mm\" x2=\"");
+    result.append(QString::number(r_ext+1.5*this->wheelCreator1.getHoleRadius()));
+    result.append("mm\" y2=\"");
+    result.append(QString::number(r_ext));
+    result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
+    result.append("</g>\n");
+
+    result.append("</g>\n");
+    result.append("</svg>\n");
+
+    // Export
+    QFile file(ui->fileNameLineEdit->text());
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this, "Export", "Could not open this file.");
+        return;
+    }
+    QTextStream out(&file);
+    out << result;
+    QMessageBox::information(this, "Export", "Image saved.");
 }
 
 void MainWindow::exportPDF()
@@ -188,6 +338,7 @@ void MainWindow::exportPDF()
         scene.render(&painter);
         painter.end();
       }
+    QMessageBox::information(this, "Export", "Image saved.");
 }
 
 void MainWindow::on_actionShow_Gear_triggered()
@@ -197,64 +348,148 @@ void MainWindow::on_actionShow_Gear_triggered()
 
 void MainWindow::refreshGearsValues()
 {
+    wheelCreator1.syncWith(wheelCreator2);
+
     MainWindow::disconnectGui();
-    ui->contactAngleDoubleSpinBox->setValue(wheelCreator.getContactAngle() * 180 / PI);
-    ui->externalDiameterDoubleSpinBox->setValue(wheelCreator.getExternalRadius()*2);
-    ui->primitiveDiameterDoubleSpinBox->setValue(wheelCreator.getPrimitiveRadius()*2);
-    ui->holeDiameterDoubleSpinBox->setValue(wheelCreator.getHoleRadius()*2);
-    ui->numberOfLighteningHolesSpinBox->setValue(wheelCreator.getNumberOfLighteningHole());
-    ui->numberOfTeethSpinBox->setValue(wheelCreator.getNumberOfTeeth());
-    ui->toothSpacingDoubleSpinBox->setValue(wheelCreator.getToothSpacing());
-    ui->pointResolutionSpinBox->setValue(wheelCreator.getPointResolution());
+
+    ui->contactAngleDoubleSpinBox->setValue(wheelCreator1.getContactAngle() * 180 / PI);
+    ui->externalDiameterDoubleSpinBox->setValue(wheelCreator1.getExternalRadius()*2);
+    ui->primitiveDiameterDoubleSpinBox->setValue(wheelCreator1.getPrimitiveRadius()*2);
+    ui->holeDiameterDoubleSpinBox->setValue(wheelCreator1.getHoleRadius()*2);
+    ui->numberOfLighteningHolesSpinBox->setValue(wheelCreator1.getNumberOfLighteningHole());
+    ui->numberOfTeethSpinBox->setValue(wheelCreator1.getNumberOfTeeth());
+    ui->toothSpacingDoubleSpinBox->setValue(wheelCreator1.getToothSpacing());
+    ui->pointResolutionSpinBox->setValue(wheelCreator1.getPointResolution());
+
+    ui->externalDiameterDoubleSpinBox_2->setValue(wheelCreator2.getExternalRadius()*2);
+    ui->primitiveDiameterDoubleSpinBox_2->setValue(wheelCreator2.getPrimitiveRadius()*2);
+    ui->holeDiameterDoubleSpinBox_2->setValue(wheelCreator2.getHoleRadius()*2);
+    ui->numberOfLighteningHolesSpinBox_2->setValue(wheelCreator2.getNumberOfLighteningHole());
+    ui->numberOfTeethSpinBox_2->setValue(wheelCreator2.getNumberOfTeeth());
+
     MainWindow::connectGui();
 }
 
 void MainWindow::setContactAngleG1(double alpha)
 {
-    wheelCreator.setContactAngle(alpha * PI / 180);
+    wheelCreator1.setContactAngle(alpha * PI / 180);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 
 void MainWindow::setNumberOfTeethG1(int z)
 {
-    wheelCreator.setNumberOfTeeth(z);
+    wheelCreator1.setNumberOfTeeth(z);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 void MainWindow::setToothSpacingG1(double p)
 {
-    wheelCreator.setToothSpacing(p);
+    wheelCreator1.setToothSpacing(p);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 void MainWindow::setHoleDiameterG1(double d)
 {
-    wheelCreator.setHoleRadius(d/2);
+    wheelCreator1.setHoleRadius(d/2);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 void MainWindow::setNumberOfLighteningHolesG1(int n)
 {
-    wheelCreator.setNumberOfLighteningHole(n);
+    wheelCreator1.setNumberOfLighteningHole(n);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 void MainWindow::setPrimitiveDiameterG1(double d)
 {
-    wheelCreator.setPrimitiveRadius(d/2);
+    wheelCreator1.setPrimitiveRadius(d/2);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 void MainWindow::setExternalDiameterG1(double d)
 {
-    wheelCreator.setExternalRadius(d/2);
+    wheelCreator1.setExternalRadius(d/2);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
 void MainWindow::setPointResolutionG1(int n)
 {
-    wheelCreator.setPointResolution(n);
+    wheelCreator1.setPointResolution(n);
     MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}void MainWindow::setContactAngleG2(double alpha)
+{
+    wheelCreator2.setContactAngle(alpha * PI / 180);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+
+void MainWindow::setNumberOfTeethG2(int z)
+{
+    wheelCreator2.setNumberOfTeeth(z);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setToothSpacingG2(double p)
+{
+    wheelCreator2.setToothSpacing(p);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setHoleDiameterG2(double d)
+{
+    wheelCreator2.setHoleRadius(d/2);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setNumberOfLighteningHolesG2(int n)
+{
+    wheelCreator2.setNumberOfLighteningHole(n);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setPrimitiveDiameterG2(double d)
+{
+    wheelCreator2.setPrimitiveRadius(d/2);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setExternalDiameterG2(double d)
+{
+    wheelCreator2.setExternalRadius(d/2);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setPointResolutionG2(int n)
+{
+    wheelCreator2.setPointResolution(n);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+void MainWindow::setAnimation(int state)
+{
+    if(!!state)
+    {
+        QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(animate()));
+        timer.start(20);
+    }
+    else
+    {
+        QObject::disconnect(&timer, SIGNAL(timeout()), this, SLOT(animate()));
+        timer.stop();
+    }
+}
+void MainWindow::animate()
+{
+    float d = (float)(ui->animationSpeedSpinBox->value())/100*PI/30;
+    wheelCreator1.setRotationOffset(wheelCreator1.getRotationOffset()+d);
+    wheelCreator1.syncWith(wheelCreator2);
+    MainWindow::drawWheel();
+}
+void MainWindow::setRotation(double alpha)
+{
+    wheelCreator1.setRotationOffset(alpha*PI/180);
+    wheelCreator1.syncWith(wheelCreator2);
     MainWindow::drawWheel();
 }
