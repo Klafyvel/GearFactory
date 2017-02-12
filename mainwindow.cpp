@@ -36,10 +36,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::connectGui()
 {
-    QObject::connect(ui->primitiveDiameterDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setPrimitiveDiameterG1(double)));
-    QObject::connect(ui->externalDiameterDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setExternalDiameterG1(double)));
     QObject::connect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
                      this, SLOT(setContactAngleG1(double)));
     QObject::connect(ui->numberOfTeethSpinBox,SIGNAL(valueChanged(int)),
@@ -76,10 +72,6 @@ void MainWindow::connectGui()
 
 void MainWindow::disconnectGui()
 {
-    QObject::disconnect(ui->primitiveDiameterDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setPrimitiveDiameterG1(double)));
-    QObject::disconnect(ui->externalDiameterDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setExternalDiameterG1(double)));
     QObject::disconnect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
                      this, SLOT(setContactAngleG1(double)));
     QObject::disconnect(ui->numberOfTeethSpinBox,SIGNAL(valueChanged(int)),

@@ -66,41 +66,31 @@ std::vector<Point> WheelCreator::computeATooth(float begin) const
     for(float u=0; u<this->pointResolution; u++)
     {
         float t = (1-u/this->pointResolution) * begin + u/this->pointResolution * top_max;
-        float x = this->positionOffset.x + this->externalRadius*cos(t);
-        float y = this->positionOffset.y + this->externalRadius*sin(t);
-        result.push_back(Point(x,y));
+        result.push_back(Point(t,this->externalRadius));
     }
 
     for(float u=0; u<this->pointResolution; u++)
     {
         float t = (1-u/this->pointResolution) * (-tooth_domain_max) + u/this->pointResolution * (-tooth_domain_min);
-        float x = r_base / cos(t) * cos(begin+deport+std::tan(t)-t) + this->positionOffset.x;
-        float y = r_base / cos(t) * sin(begin+deport+std::tan(t)-t) + this->positionOffset.y;
-        result.push_back(Point(x,y));
+        result.push_back(Point(begin+deport+std::tan(t)-t,r_base / cos(t)));
     }
 
     for(float u=0; u<this->pointResolution; u++)
     {
         float t = (1-u/this->pointResolution) * (begin+deport) + u/this->pointResolution * (begin+2*PI/this->numberOfTeeth - deport);
-        float x = r_foot * cos(t) + this->positionOffset.x;
-        float y = r_foot * sin(t) + this->positionOffset.y;
-        result.push_back(Point(x,y));
+        result.push_back(Point(t,r_foot));
     }
 
     for(float u=0; u<this->pointResolution; u++)
     {
         float t = u/this->pointResolution * tooth_domain_max + (1-u/this->pointResolution) * tooth_domain_min;
-        float x = r_base / cos(t) * cos(begin-deport+2*PI/this->numberOfTeeth+std::tan(t)-t) + this->positionOffset.x;
-        float y = r_base / cos(t) * sin(begin-deport+2*PI/this->numberOfTeeth+std::tan(t)-t) + this->positionOffset.y;
-        result.push_back(Point(x,y));
+        result.push_back(Point(begin-deport+2*PI/this->numberOfTeeth+std::tan(t)-t,r_base / cos(t)));
     }
 
     for(float u=0; u<this->pointResolution; u++)
     {
         float t = (1-u/this->pointResolution) * (begin+2*PI/this->numberOfTeeth-deport+std::tan(tooth_domain_max)-tooth_domain_max) + u/this->pointResolution * (begin+2*PI/this->numberOfTeeth);
-        float x = this->positionOffset.x + this->externalRadius*cos(t);
-        float y = this->positionOffset.y + this->externalRadius*sin(t);
-        result.push_back(Point(x,y));
+        result.push_back(Point(t,this->externalRadius));
     }
     return result;
 }
@@ -108,10 +98,15 @@ std::vector<Point> WheelCreator::computeATooth(float begin) const
 std::vector<Point> WheelCreator::getPoints() const
 {
     std::vector<Point> result(0);
+    std::vector<Point> tooth = WheelCreator::computeATooth(this->rotationOffset);
     for(int begin=0; begin<this->numberOfTeeth; begin++)
     {
-        std::vector<Point> tooth = WheelCreator::computeATooth(begin*2*PI/this->numberOfTeeth+this->rotationOffset);
-        result.insert(result.end(),tooth.begin(), tooth.end());
+        for(Point p : tooth)
+        {
+            float x = p.y * cos(p.x + begin*2*PI/this->numberOfTeeth) + this->positionOffset.x;
+            float y = p.y * sin(p.x + begin*2*PI/this->numberOfTeeth) + this->positionOffset.y;
+            result.push_back(Point(x,y));
+        }
     }
     return result;
 }
@@ -197,6 +192,6 @@ void WheelCreator::syncWith(WheelCreator &wheel) const
     float d = this->primitiveRadius + wheel.primitiveRadius;
     float r = this->primitiveRadius/wheel.primitiveRadius;
     wheel.setPositionOffset(this->positionOffset.x+d, this->positionOffset.y);
-    wheel.setRotationOffset((1+1/2*(this->numberOfTeeth)%2)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
+    wheel.setRotationOffset((1+((this->numberOfTeeth)%2)/2+wheel.numberOfTeeth%2)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
 }
 }
