@@ -57,7 +57,7 @@ std::vector<Point> WheelCreator::computeATooth(float begin) const
 
     float m = this->toothSpacing / PI;
     float r_base = this->primitiveRadius * cos(this->contactAngle);
-    float r_foot = this->externalRadius - 2.5/2 * m;
+    float r_foot = this->externalRadius - 2.5/2*1.2 * m;
     float tooth_domain_max = std::acos(r_base/this->externalRadius);
     float tooth_domain_min = (r_foot<r_base)?0:std::acos(r_base/r_foot);
     float deport = PI / this->numberOfTeeth / 2 + std::tan(this->contactAngle) - this->contactAngle; //- std::tan(tooth_domain_min) + tooth_domain_min ;
@@ -125,7 +125,7 @@ void WheelCreator::computeValues()
 {
     this->primitiveRadius = this->numberOfTeeth * this->toothSpacing / PI / 2;
     float m = this->toothSpacing / PI;
-    this->externalRadius = this->primitiveRadius + m / 2;
+    this->externalRadius = this->primitiveRadius + m*2/3;
 }
 
 void WheelCreator::setPrimitiveRadius(float r)
@@ -133,14 +133,14 @@ void WheelCreator::setPrimitiveRadius(float r)
     float m = this->toothSpacing / PI;
     this->primitiveRadius = r;
     this->numberOfTeeth = r * 2 * PI / this->toothSpacing;
-    this->externalRadius = this->primitiveRadius + m/2;
+    this->externalRadius = this->primitiveRadius + m*2/3;
 }
 
 void WheelCreator::setExternalRadius(float r)
 {
     this->externalRadius = r;
     float m = this->toothSpacing / PI;
-    this->primitiveRadius = r - m/2;
+    this->primitiveRadius = r - m*2/3;
     this->numberOfTeeth = this->primitiveRadius * 2 * PI / this->toothSpacing;
 }
 
@@ -197,6 +197,6 @@ void WheelCreator::syncWith(WheelCreator &wheel) const
     float d = this->primitiveRadius + wheel.primitiveRadius;
     float r = this->primitiveRadius/wheel.primitiveRadius;
     wheel.setPositionOffset(this->positionOffset.x+d, this->positionOffset.y);
-    wheel.setRotationOffset((float)(this->numberOfTeeth-wheel.numberOfTeeth+1)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
+    wheel.setRotationOffset((1+1/2*(this->numberOfTeeth)%2)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
 }
 }
