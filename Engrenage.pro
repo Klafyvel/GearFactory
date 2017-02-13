@@ -25,9 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    wheelcreator.cpp
+    wheelcreator.cpp \
+    wheelwidget.cpp \
+    exportdialog.cpp
 
 HEADERS  += mainwindow.h \
-    wheelcreator.h
+    wheelcreator.h \
+    wheelwidget.h \
+    exportdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    wheelwidget.ui \
+    exportdialog.ui

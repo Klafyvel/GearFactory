@@ -208,7 +208,7 @@ void WheelCreator::setClearance(float c)
 std::vector<Point> WheelCreator::computeAHole(float begin) const
 {
     float m = this->toothSpacing / PI;
-    float r_ext = (this->primitiveRadius - m) * 0.8;
+    float r_ext = this->primitiveRadius - m - std::max(this->holeRadius*2.0, (double)this->armWidth);
     float r_int = std::max(this->holeRadius*2.0, this->armWidth * 1.25);
     float begin_ext = begin + std::asin(this->armWidth/2/r_ext);
     float end_ext = begin + 2*PI/this->numberOfLighteningHole - std::asin(this->armWidth/2/r_ext);

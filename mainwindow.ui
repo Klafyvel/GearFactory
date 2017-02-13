@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1227</width>
-    <height>588</height>
+    <width>484</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,130 @@
    <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_7">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="1">
+     <widget class="QGroupBox" name="groupBoxView">
+      <property name="title">
+       <string>View</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QFormLayout" name="formLayout_8">
+         <item row="1" column="0">
+          <widget class="QLabel" name="showPrimitiveCircleLabel">
+           <property name="text">
+            <string>Show primitive circle</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="showPrimitiveCircleCheckBox"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="showExternalCircleLabel">
+           <property name="text">
+            <string>Show external circle</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="showExternalCircleCheckBox"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="showLineOfContactLabel">
+           <property name="text">
+            <string>Show line of contact</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QCheckBox" name="showLineOfContactCheckBox"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="pointResolutionLabel">
+           <property name="text">
+            <string>Point resolution</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="pointResolutionSpinBox">
+           <property name="minimum">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <number>500</number>
+           </property>
+           <property name="value">
+            <number>50</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_9">
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="animateCheckBox"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="animationSpeedLabel">
+           <property name="text">
+            <string>Animation
+speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="animationSpeedSpinBox">
+           <property name="suffix">
+            <string> %</string>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>25</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="rotationLabel">
+           <property name="text">
+            <string>Rotation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="rotationDoubleSpinBox">
+           <property name="suffix">
+            <string> °</string>
+           </property>
+           <property name="maximum">
+            <double>360.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="animateLabel">
+           <property name="text">
+            <string>Animate</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
      <widget class="QGraphicsView" name="graphicsView">
       <property name="minimumSize">
        <size>
@@ -46,590 +168,108 @@
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
+    <item row="2" column="0">
+     <widget class="QGroupBox" name="gearGroupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <widget class="QWidget" name="tabWidgetPage1">
-       <attribute name="title">
-        <string>Gear</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="title">
-           <string>General</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <layout class="QFormLayout" name="formLayout_6">
-             <item row="0" column="0">
-              <widget class="QLabel" name="contactAngleLabel">
-               <property name="text">
-                <string>Contact angle</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="contactAngleDoubleSpinBox">
-               <property name="suffix">
-                <string> °</string>
-               </property>
-               <property name="minimum">
-                <double>-45.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>45.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="toothSpacingLabel">
-               <property name="text">
-                <string>Tooth spacing</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="toothSpacingDoubleSpinBox">
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="minimum">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="clearanceLabel">
-               <property name="text">
-                <string>Clearance</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="clearanceDoubleSpinBox">
-               <property name="suffix">
-                <string> %</string>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="title">
-           <string>Wheel 1</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <layout class="QFormLayout" name="formLayout_5">
-             <item row="0" column="0">
-              <widget class="QLabel" name="numberOfTeethLabel">
-               <property name="text">
-                <string>Number of teeth</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="numberOfTeethSpinBox">
-               <property name="minimum">
-                <number>1</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="externalDiameterLabel">
-               <property name="text">
-                <string>External diameter</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="externalDiameterDoubleSpinBox">
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="minimum">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>10000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="primitiveDiameterLabel">
-               <property name="text">
-                <string>Primitive diameter</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="primitiveDiameterDoubleSpinBox">
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="prefix">
-                <string/>
-               </property>
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="minimum">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>100000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QFormLayout" name="formLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="holeDiameterLabel">
-               <property name="text">
-                <string>Hole diameter</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="holeDiameterDoubleSpinBox">
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="numberOfLighteningHolesLabel">
-               <property name="text">
-                <string>Number of
-Lightening holes</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QSpinBox" name="numberOfLighteningHolesSpinBox"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="armWidthLabel">
-               <property name="text">
-                <string>Arm width</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="armWidthDoubleSpinBox">
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="wheel2GroupBox">
-          <property name="title">
-           <string>Wheel &amp;2</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <layout class="QFormLayout" name="formLayout_7">
-             <item row="0" column="0">
-              <widget class="QLabel" name="numberOfTeethLabel_2">
-               <property name="text">
-                <string>Number of teeth</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QSpinBox" name="numberOfTeethSpinBox_2">
-               <property name="minimum">
-                <number>1</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="primitiveDiameterLabel_2">
-               <property name="text">
-                <string>Primitive diameter</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="primitiveDiameterDoubleSpinBox_2">
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="minimum">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>100000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="externalDiameterLabel_2">
-               <property name="text">
-                <string>External diameter</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="externalDiameterDoubleSpinBox_2">
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="minimum">
-                <double>1.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>10000.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QFormLayout" name="formLayout_2">
-             <item row="1" column="1">
-              <widget class="QSpinBox" name="numberOfLighteningHolesSpinBox_2"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="numberOfLighteningHolesLabel_2">
-               <property name="text">
-                <string>Number of
-lightening holes</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="holeDiameterDoubleSpinBox_2">
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="holeDiameterLabel_2">
-               <property name="text">
-                <string>Hole diameter</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="armWidthLabel_2">
-               <property name="text">
-                <string>Arm width</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="armWidthDoubleSpinBox_2">
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabWidgetPage2">
-       <attribute name="title">
-        <string>Graphics</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QGroupBox" name="groupBoxView">
-          <property name="title">
-           <string>View</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <layout class="QFormLayout" name="formLayout_3">
-             <item row="0" column="0">
-              <widget class="QLabel" name="showGridLabel">
-               <property name="text">
-                <string>Show grid</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QCheckBox" name="showGridCheckBox">
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="gridSizeLabel">
-               <property name="text">
-                <string>Grid size</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="gridSizeDoubleSpinBox">
-               <property name="suffix">
-                <string> mm</string>
-               </property>
-               <property name="value">
-                <double>10.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="pointResolutionLabel">
-               <property name="text">
-                <string>Point resolution</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QSpinBox" name="pointResolutionSpinBox">
-               <property name="minimum">
-                <number>2</number>
-               </property>
-               <property name="maximum">
-                <number>500</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QFormLayout" name="formLayout_8">
-             <item row="0" column="0">
-              <widget class="QLabel" name="showPrimitiveCircleLabel">
-               <property name="text">
-                <string>Show primitive circle</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QCheckBox" name="showPrimitiveCircleCheckBox"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="showExternalCircleLabel">
-               <property name="text">
-                <string>Show external circle</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="showExternalCircleCheckBox"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="showLineOfContactLabel">
-               <property name="text">
-                <string>Show line of contact</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QCheckBox" name="showLineOfContactCheckBox"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line_5">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QFormLayout" name="formLayout_9">
-             <item row="0" column="0">
-              <widget class="QLabel" name="animateLabel">
-               <property name="text">
-                <string>Animate</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QCheckBox" name="animateCheckBox"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="animationSpeedLabel">
-               <property name="text">
-                <string>Animation
-speed</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QSpinBox" name="animationSpeedSpinBox">
-               <property name="suffix">
-                <string> %</string>
-               </property>
-               <property name="maximum">
-                <number>100</number>
-               </property>
-               <property name="value">
-                <number>25</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="rotationLabel">
-               <property name="text">
-                <string>Rotation</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="rotationDoubleSpinBox">
-               <property name="suffix">
-                <string> °</string>
-               </property>
-               <property name="maximum">
-                <double>360.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBoxExport">
-          <property name="title">
-           <string>Export</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <layout class="QFormLayout" name="formLayout_4">
-             <property name="labelAlignment">
-              <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-             </property>
-             <property name="formAlignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-             </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="fileNameLabel_2">
-               <property name="text">
-                <string>File name</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QWidget" name="fileNameWidget" native="true">
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <item>
-                 <widget class="QLineEdit" name="fileNameLineEdit">
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="fileNamePushButton">
-                  <property name="text">
-                   <string>Choose...</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="formatLabel">
-               <property name="text">
-                <string>Format</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QComboBox" name="formatComboBox">
-               <item>
-                <property name="text">
-                 <string>SVG</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>PDF</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>PNG</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QPushButton" name="exportPushButton">
-             <property name="text">
-              <string>Export</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+      <property name="title">
+       <string>Gear</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+         <property name="tabsClosable">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>General Wheel</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QFormLayout" name="formLayout_6">
+         <item row="0" column="0">
+          <widget class="QLabel" name="contactAngleLabel">
+           <property name="text">
+            <string>Contact angle</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="contactAngleDoubleSpinBox">
+           <property name="suffix">
+            <string> °</string>
+           </property>
+           <property name="minimum">
+            <double>-45.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>45.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>20.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="toothSpacingLabel">
+           <property name="text">
+            <string>Tooth spacing</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="toothSpacingDoubleSpinBox">
+           <property name="suffix">
+            <string> mm</string>
+           </property>
+           <property name="minimum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>50.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="clearanceLabel">
+           <property name="text">
+            <string>Clearance</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="clearanceDoubleSpinBox">
+           <property name="suffix">
+            <string> %</string>
+           </property>
+           <property name="value">
+            <double>5.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -639,7 +279,7 @@ speed</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1227</width>
+     <width>484</width>
      <height>30</height>
     </rect>
    </property>
@@ -653,7 +293,6 @@ speed</string>
    </attribute>
    <addaction name="actionShow_View"/>
    <addaction name="actionShow_Gear"/>
-   <addaction name="actionExport"/>
   </widget>
   <action name="actionShow_View">
    <property name="checkable">
@@ -678,17 +317,6 @@ speed</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+G</string>
-   </property>
-  </action>
-  <action name="actionExport">
-   <property name="text">
-    <string>Export</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the 'export' window.</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+E</string>
    </property>
   </action>
  </widget>
