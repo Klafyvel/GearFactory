@@ -51,16 +51,21 @@ float WheelCreator::getRotationOffset() const
     return this->rotationOffset;
 }
 
+float WheelCreator::getClearance() const
+{
+    return this->clearance;
+}
+
 std::vector<Point> WheelCreator::computeATooth(float begin) const
 {
     std::vector<Point>result(0);
 
     float m = this->toothSpacing / PI;
     float r_base = this->primitiveRadius * cos(this->contactAngle);
-    float r_foot = this->externalRadius - 2.5/2*1.2 * m;
+    float r_foot = this->primitiveRadius - m;
     float tooth_domain_max = std::acos(r_base/this->externalRadius);
     float tooth_domain_min = (r_foot<r_base)?0:std::acos(r_base/r_foot);
-    float deport = PI / this->numberOfTeeth / 2 + std::tan(this->contactAngle) - this->contactAngle; //- std::tan(tooth_domain_min) + tooth_domain_min ;
+    float deport = (1- this->clearance)*(PI / this->numberOfTeeth / 2 + std::tan(this->contactAngle) - this->contactAngle);
     float top_max = begin+deport - std::tan(tooth_domain_max) + tooth_domain_max;
 
     for(float u=0; u<this->pointResolution; u++)
@@ -120,7 +125,7 @@ void WheelCreator::computeValues()
 {
     this->primitiveRadius = this->numberOfTeeth * this->toothSpacing / PI / 2;
     float m = this->toothSpacing / PI;
-    this->externalRadius = this->primitiveRadius + m*2/3;
+    this->externalRadius = this->primitiveRadius + m/2;
 }
 
 void WheelCreator::setPrimitiveRadius(float r)
@@ -128,14 +133,14 @@ void WheelCreator::setPrimitiveRadius(float r)
     float m = this->toothSpacing / PI;
     this->primitiveRadius = r;
     this->numberOfTeeth = r * 2 * PI / this->toothSpacing;
-    this->externalRadius = this->primitiveRadius + m*2/3;
+    this->externalRadius = this->primitiveRadius + m/2;
 }
 
 void WheelCreator::setExternalRadius(float r)
 {
     this->externalRadius = r;
     float m = this->toothSpacing / PI;
-    this->primitiveRadius = r - m*2/3;
+    this->primitiveRadius = r - m/2;
     this->numberOfTeeth = this->primitiveRadius * 2 * PI / this->toothSpacing;
 }
 
@@ -194,4 +199,66 @@ void WheelCreator::syncWith(WheelCreator &wheel) const
     wheel.setPositionOffset(this->positionOffset.x+d, this->positionOffset.y);
     wheel.setRotationOffset((1+((this->numberOfTeeth)%2)/2+wheel.numberOfTeeth%2)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
 }
+
+void WheelCreator::setClearance(float c)
+{
+    this->clearance = c;
+}
+
+std::vector<Point> WheelCreator::computeAHole(float begin) const
+{
+    float m = this->toothSpacing / PI;
+    float r_ext = (this->primitiveRadius - m) * 0.8;
+    float r_int = std::max(this->holeRadius*2.0, this->armWidth * 1.25);
+    float begin_ext = begin + std::asin(this->armWidth/2/r_ext);
+    float end_ext = begin + 2*PI/this->numberOfLighteningHole - std::asin(this->armWidth/2/r_ext);
+    float begin_int = begin + std::asin(this->armWidth/2/r_int);
+    float end_int = begin + 2*PI/this->numberOfLighteningHole - std::asin(this->armWidth/2/r_int);
+
+    std::vector<Point> result(0);
+    float res = 3*this->pointResolution;
+    for(float u=0; u<res; u++)
+    {
+        float t = u/res * end_int + (1-u/res) * begin_int;
+        result.push_back(Point(t,r_int));
+    }
+    for(float u=0; u<res; u++)
+    {
+        float t = u/res * begin_ext + (1-u/res) * end_ext;
+        result.push_back(Point(t,r_ext));
+    }
+
+    result.push_back(Point(begin_int,r_int));
+    return result;
+}
+
+std::vector<std::vector<Point>> WheelCreator::getLighteningHoles() const
+{
+    std::vector<Point> hole = WheelCreator::computeAHole(this->rotationOffset);
+    std::vector<std::vector<Point>> result(0);
+    for(int i=0; i<this->numberOfLighteningHole; i++)
+    {
+        std::vector<Point> thisHole(0);
+        for(Point p : hole)
+        {
+            float x = p.y * cos(p.x + i*2*PI/this->numberOfLighteningHole) + this->positionOffset.x;
+            float y = p.y * sin(p.x + i*2*PI/this->numberOfLighteningHole) + this->positionOffset.y;
+            thisHole.push_back(Point(x,y));
+        }
+        result.push_back(thisHole);
+
+    }
+    return result;
+}
+
+void WheelCreator::setArmWidth(float w)
+{
+    this->armWidth = w;
+}
+
+float WheelCreator::getArmWidth() const
+{
+    return this->armWidth;
+}
+
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1227</width>
-    <height>584</height>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -97,6 +97,23 @@
                 <string> mm</string>
                </property>
                <property name="minimum">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="clearanceLabel">
+               <property name="text">
+                <string>Clearance</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="clearanceDoubleSpinBox">
+               <property name="suffix">
+                <string> %</string>
+               </property>
+               <property name="value">
                 <double>1.000000000000000</double>
                </property>
               </widget>
@@ -212,6 +229,20 @@ Lightening holes</string>
              </item>
              <item row="1" column="1">
               <widget class="QSpinBox" name="numberOfLighteningHolesSpinBox"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="armWidthLabel">
+               <property name="text">
+                <string>Arm width</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="armWidthDoubleSpinBox">
+               <property name="suffix">
+                <string> mm</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -331,6 +362,20 @@ lightening holes</string>
                </property>
               </widget>
              </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="armWidthLabel_2">
+               <property name="text">
+                <string>Arm width</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="armWidthDoubleSpinBox_2">
+               <property name="suffix">
+                <string> mm</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -421,14 +466,14 @@ lightening holes</string>
               <widget class="QCheckBox" name="showPrimitiveCircleCheckBox"/>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="showExternalCicleLabel">
+              <widget class="QLabel" name="showExternalCircleLabel">
                <property name="text">
-                <string>Show external cicle</string>
+                <string>Show external circle</string>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QCheckBox" name="showExternalCicleCheckBox"/>
+              <widget class="QCheckBox" name="showExternalCircleCheckBox"/>
              </item>
              <item row="2" column="0">
               <widget class="QLabel" name="showLineOfContactLabel">

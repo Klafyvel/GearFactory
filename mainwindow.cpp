@@ -12,14 +12,19 @@ MainWindow::MainWindow(QWidget *parent) :
     wheelCreator1.setNumberOfTeeth(12);
     wheelCreator1.setToothSpacing(50);
     wheelCreator1.setHoleRadius(10);
-    wheelCreator1.setPointResolution(50);
+    wheelCreator1.setPointResolution(40);
+    wheelCreator1.setClearance(0.02);
+    wheelCreator1.setNumberOfLighteningHole(3);
+    wheelCreator1.setArmWidth(20);
     wheelCreator1.computeValues();
 
     wheelCreator2.setContactAngle(20 * PI / 180);
     wheelCreator2.setNumberOfTeeth(6);
     wheelCreator2.setToothSpacing(50);
     wheelCreator2.setHoleRadius(10);
-    wheelCreator2.setPointResolution(50);
+    wheelCreator2.setPointResolution(40);
+    wheelCreator2.setClearance(0.02);
+    wheelCreator2.setArmWidth(20);
     wheelCreator2.computeValues();
 
     wheelCreator1.syncWith(wheelCreator2);
@@ -37,21 +42,17 @@ MainWindow::~MainWindow()
 void MainWindow::connectGui()
 {
     QObject::connect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setContactAngleG1(double)));
+                     this, SLOT(setContactAngle(double)));
     QObject::connect(ui->numberOfTeethSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfTeethG1(int)));
     QObject::connect(ui->toothSpacingDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setToothSpacingG1(double)));
+                     this, SLOT(setToothSpacing(double)));
     QObject::connect(ui->holeDiameterDoubleSpinBox,SIGNAL(valueChanged(double)),
                      this, SLOT(setHoleDiameterG1(double)));
     QObject::connect(ui->numberOfLighteningHolesSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfLighteningHolesG1(int)));
-    QObject::connect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setContactAngleG2(double)));
     QObject::connect(ui->numberOfTeethSpinBox_2,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfTeethG2(int)));
-    QObject::connect(ui->toothSpacingDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setToothSpacingG2(double)));
     QObject::connect(ui->holeDiameterDoubleSpinBox_2,SIGNAL(valueChanged(double)),
                      this, SLOT(setHoleDiameterG2(double)));
     QObject::connect(ui->numberOfLighteningHolesSpinBox_2,SIGNAL(valueChanged(int)),
@@ -61,33 +62,33 @@ void MainWindow::connectGui()
     QObject::connect(ui->exportPushButton,SIGNAL(clicked()),
                      this, SLOT(exportGraphics()));
     QObject::connect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
-                     this, SLOT(setPointResolutionG1(int)));
-    QObject::connect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
-                     this, SLOT(setPointResolutionG2(int)));
+                     this, SLOT(setPointResolution(int)));
     QObject::connect(ui->animateCheckBox,SIGNAL(stateChanged(int)),
                      this, SLOT(setAnimation(int)));
     QObject::connect(ui->wheel2GroupBox, SIGNAL(clicked()), this, SLOT(drawWheel()));
     QObject::connect(ui->rotationDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setRotation(double)));
+    QObject::connect(ui->clearanceDoubleSpinBox, SIGNAL(valueChanged(double)),
+                     this, SLOT(setClearance(double)));
+    QObject::connect(ui->armWidthDoubleSpinBox, SIGNAL(valueChanged(double)),
+                     this, SLOT(setArmWidthG1(double)));
+    QObject::connect(ui->armWidthDoubleSpinBox_2, SIGNAL(valueChanged(double)),
+                     this, SLOT(setArmWidthG2(double)));
 }
 
 void MainWindow::disconnectGui()
 {
     QObject::disconnect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setContactAngleG1(double)));
+                     this, SLOT(setContactAngle(double)));
     QObject::disconnect(ui->numberOfTeethSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfTeethG1(int)));
     QObject::disconnect(ui->toothSpacingDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setToothSpacingG1(double)));
+                     this, SLOT(setToothSpacing(double)));
     QObject::disconnect(ui->holeDiameterDoubleSpinBox,SIGNAL(valueChanged(double)),
                      this, SLOT(setHoleDiameterG1(double)));
     QObject::disconnect(ui->numberOfLighteningHolesSpinBox,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfLighteningHolesG1(int)));
-    QObject::disconnect(ui->contactAngleDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setContactAngleG2(double)));
     QObject::disconnect(ui->numberOfTeethSpinBox_2,SIGNAL(valueChanged(int)),
                      this, SLOT(setNumberOfTeethG2(int)));
-    QObject::disconnect(ui->toothSpacingDoubleSpinBox,SIGNAL(valueChanged(double)),
-                     this, SLOT(setToothSpacingG2(double)));
     QObject::disconnect(ui->holeDiameterDoubleSpinBox_2,SIGNAL(valueChanged(double)),
                      this, SLOT(setHoleDiameterG2(double)));
     QObject::disconnect(ui->numberOfLighteningHolesSpinBox_2,SIGNAL(valueChanged(int)),
@@ -97,13 +98,17 @@ void MainWindow::disconnectGui()
     QObject::disconnect(ui->exportPushButton,SIGNAL(clicked()),
                      this, SLOT(exportGraphics()));
     QObject::disconnect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
-                     this, SLOT(setPointResolutionG1(int)));
-    QObject::disconnect(ui->pointResolutionSpinBox,SIGNAL(valueChanged(int)),
-                     this, SLOT(setPointResolutionG2(int)));
+                     this, SLOT(setPointResolution(int)));
     QObject::disconnect(ui->animateCheckBox,SIGNAL(stateChanged(int)),
                      this, SLOT(setAnimation(int)));
     QObject::disconnect(ui->wheel2GroupBox, SIGNAL(clicked()), this, SLOT(drawWheel()));
     QObject::disconnect(ui->rotationDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setRotation(double)));
+    QObject::disconnect(ui->clearanceDoubleSpinBox, SIGNAL(valueChanged(double)),
+                     this, SLOT(setClearance(double)));
+    QObject::disconnect(ui->armWidthDoubleSpinBox, SIGNAL(valueChanged(double)),
+                     this, SLOT(setArmWidthG1(double)));
+    QObject::disconnect(ui->armWidthDoubleSpinBox_2, SIGNAL(valueChanged(double)),
+                     this, SLOT(setArmWidthG2(double)));
 }
 
 void MainWindow::on_actionShow_View_triggered()
@@ -128,11 +133,24 @@ void MainWindow::drawWheel()
     float cross_size = r*1.5;
     scene.addLine(center.x-cross_size,center.y,center.x+cross_size,center.y);
     scene.addLine(center.x,center.y-cross_size,center.x,center.y+cross_size);
-
     scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+
+    std::vector<std::vector<wheel::Point>> holes = wheelCreator1.getLighteningHoles();
+    for(std::vector<wheel::Point> points : holes)
+    {
+        wheel::Point current = points[0];
+        for(wheel::Point next : points)
+        {
+            scene.addLine(current.x, current.y, next.x, next.y);
+            current = next;
+        }
+    }
 
     r = wheelCreator1.getPrimitiveRadius();
     if(!!ui->showPrimitiveCircleCheckBox->checkState())
+        scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+    r = wheelCreator1.getExternalRadius();
+    if(!!ui->showExternalCircleCheckBox->checkState())
         scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
 
     if(!ui->wheel2GroupBox->isChecked())
@@ -151,10 +169,24 @@ void MainWindow::drawWheel()
     float cross_size2 = r*1.5;
     scene.addLine(center.x-cross_size2,center.y,center.x+cross_size2,center.y);
     scene.addLine(center.x,center.y-cross_size2,center.x,center.y+cross_size2);
-
     scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+
+    holes = wheelCreator2.getLighteningHoles();
+    for(std::vector<wheel::Point> points : holes)
+    {
+        wheel::Point current = points[0];
+        for(wheel::Point next : points)
+        {
+            scene.addLine(current.x, current.y, next.x, next.y);
+            current = next;
+        }
+    }
+
     r = wheelCreator2.getPrimitiveRadius();
     if(!!ui->showPrimitiveCircleCheckBox->checkState())
+        scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
+    r = wheelCreator2.getExternalRadius();
+    if(!!ui->showExternalCircleCheckBox->checkState())
         scene.addEllipse(center.x - r, center.y - r, r*2, r*2);
 }
 
@@ -297,7 +329,6 @@ void MainWindow::exportSVG()
     result.append("mm\" y2=\"");
     result.append(QString::number(r_ext));
     result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
-    result.append("</g>\n");
 
     result.append("</g>\n");
     result.append("</svg>\n");
@@ -352,19 +383,24 @@ void MainWindow::refreshGearsValues()
     ui->numberOfTeethSpinBox->setValue(wheelCreator1.getNumberOfTeeth());
     ui->toothSpacingDoubleSpinBox->setValue(wheelCreator1.getToothSpacing());
     ui->pointResolutionSpinBox->setValue(wheelCreator1.getPointResolution());
+    ui->armWidthDoubleSpinBox->setValue(wheelCreator1.getArmWidth());
 
     ui->externalDiameterDoubleSpinBox_2->setValue(wheelCreator2.getExternalRadius()*2);
     ui->primitiveDiameterDoubleSpinBox_2->setValue(wheelCreator2.getPrimitiveRadius()*2);
     ui->holeDiameterDoubleSpinBox_2->setValue(wheelCreator2.getHoleRadius()*2);
     ui->numberOfLighteningHolesSpinBox_2->setValue(wheelCreator2.getNumberOfLighteningHole());
     ui->numberOfTeethSpinBox_2->setValue(wheelCreator2.getNumberOfTeeth());
+    ui->armWidthDoubleSpinBox_2->setValue(wheelCreator2.getArmWidth());
+
+    ui->clearanceDoubleSpinBox->setValue(wheelCreator1.getClearance()*100);
 
     MainWindow::connectGui();
 }
 
-void MainWindow::setContactAngleG1(double alpha)
+void MainWindow::setContactAngle(double alpha)
 {
     wheelCreator1.setContactAngle(alpha * PI / 180);
+    wheelCreator2.setContactAngle(alpha * PI / 180);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
@@ -375,9 +411,10 @@ void MainWindow::setNumberOfTeethG1(int z)
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
-void MainWindow::setToothSpacingG1(double p)
+void MainWindow::setToothSpacing(double p)
 {
     wheelCreator1.setToothSpacing(p);
+    wheelCreator2.setToothSpacing(p);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
@@ -405,14 +442,10 @@ void MainWindow::setExternalDiameterG1(double d)
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
-void MainWindow::setPointResolutionG1(int n)
+void MainWindow::setPointResolution(int n)
 {
     wheelCreator1.setPointResolution(n);
-    MainWindow::refreshGearsValues();
-    MainWindow::drawWheel();
-}void MainWindow::setContactAngleG2(double alpha)
-{
-    wheelCreator2.setContactAngle(alpha * PI / 180);
+    wheelCreator2.setPointResolution(n);
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
@@ -423,12 +456,7 @@ void MainWindow::setNumberOfTeethG2(int z)
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
-void MainWindow::setToothSpacingG2(double p)
-{
-    wheelCreator2.setToothSpacing(p);
-    MainWindow::refreshGearsValues();
-    MainWindow::drawWheel();
-}
+
 void MainWindow::setHoleDiameterG2(double d)
 {
     wheelCreator2.setHoleRadius(d/2);
@@ -453,12 +481,7 @@ void MainWindow::setExternalDiameterG2(double d)
     MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }
-void MainWindow::setPointResolutionG2(int n)
-{
-    wheelCreator2.setPointResolution(n);
-    MainWindow::refreshGearsValues();
-    MainWindow::drawWheel();
-}
+
 void MainWindow::setAnimation(int state)
 {
     if(!!state)
@@ -483,5 +506,27 @@ void MainWindow::setRotation(double alpha)
 {
     wheelCreator1.setRotationOffset(alpha*PI/180);
     wheelCreator1.syncWith(wheelCreator2);
+    MainWindow::drawWheel();
+}
+
+void MainWindow::setClearance(double c)
+{
+    wheelCreator1.setClearance(c/100);
+    wheelCreator2.setClearance(c/100);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+
+void MainWindow::setArmWidthG1(double w)
+{
+    wheelCreator1.setArmWidth(w);
+    MainWindow::refreshGearsValues();
+    MainWindow::drawWheel();
+}
+
+void MainWindow::setArmWidthG2(double w)
+{
+    wheelCreator2.setArmWidth(w);
+    MainWindow::refreshGearsValues();
     MainWindow::drawWheel();
 }

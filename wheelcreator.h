@@ -27,6 +27,8 @@ public:
 
     std::vector<Point> computeATooth(float begin) const;
     std::vector<Point> getPoints() const;
+    std::vector<Point> computeAHole(float begin) const;
+    std::vector<std::vector<Point>> getLighteningHoles() const;
 
     void computeValues();
 
@@ -43,6 +45,8 @@ public:
     Point getPositionOffset() const;
     int getPointResolution() const;
     float getRotationOffset() const;
+    float getClearance() const;
+    float getArmWidth() const;
 
     // Setters
     void setPrimitiveRadius(float r);
@@ -56,6 +60,8 @@ public:
     void setPositionOffset(float x, float y);
     void setPointResolution(int n);
     void setRotationOffset(float alpha);
+    void setClearance(float c);
+    void setArmWidth(float w);
 
 protected:
     float primitiveRadius;
@@ -68,6 +74,8 @@ protected:
     Point positionOffset;
     float rotationOffset;
     int pointResolution;
+    float clearance;
+    float armWidth;
 };
 
 }

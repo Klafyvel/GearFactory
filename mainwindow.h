@@ -39,21 +39,22 @@ public slots:
 
     void setPrimitiveDiameterG1(double d);
     void setExternalDiameterG1(double d);
-    void setContactAngleG1(double alpha);
     void setNumberOfTeethG1(int z);
-    void setToothSpacingG1(double p);
     void setHoleDiameterG1(double d);
     void setNumberOfLighteningHolesG1(int n);
-    void setPointResolutionG1(int n);
+    void setArmWidthG1(double w);
 
     void setPrimitiveDiameterG2(double d);
     void setExternalDiameterG2(double d);
-    void setContactAngleG2(double alpha);
     void setNumberOfTeethG2(int z);
-    void setToothSpacingG2(double p);
     void setHoleDiameterG2(double d);
     void setNumberOfLighteningHolesG2(int n);
-    void setPointResolutionG2(int n);
+    void setArmWidthG2(double w);
+
+    void setPointResolution(int n);
+    void setToothSpacing(double p);
+    void setContactAngle(double alpha);
+    void setClearance(double c);
 
     void setRotation(double alpha);
 
