@@ -1,10 +1,11 @@
 #include "wheelwidget.h"
 #include "ui_wheelwidget.h"
 
-WheelWidget::WheelWidget(QGraphicsScene *scene, float contactAngle, float toothSpacing, QWidget *parent) :
+WheelWidget::WheelWidget(QGraphicsScene *scene, QTabWidget* tab, int i, float contactAngle, float toothSpacing, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::WheelWidget)
 {
+    this->i = i;
     ui->setupUi(this);
     this->scene = scene;
     next = 0;
@@ -14,6 +15,7 @@ WheelWidget::WheelWidget(QGraphicsScene *scene, float contactAngle, float toothS
     wheelCreator.setNumberOfTeeth(3);
     wheelCreator.setNumberOfLighteningHole(0);
     drawing = true;
+    this->tab = tab;
 }
 
 void WheelWidget::connectGui()
@@ -28,6 +30,9 @@ void WheelWidget::connectGui()
                      this, SLOT(setArmWidth(double)));
     QObject::connect(ui->exportPushButton, SIGNAL(clicked()),
                      this, SLOT(exportWheel()));
+    QObject::connect(ui->addPushButton, SIGNAL(clicked()), this, SLOT(addWheel()));
+    if(previous)
+        QObject::connect(ui->deletePushButton, SIGNAL(clicked()), previous, SLOT(delWheel()));
 }
 
 void WheelWidget::disconnectGui()
@@ -42,6 +47,9 @@ void WheelWidget::disconnectGui()
                      this, SLOT(setArmWidth(double)));
     QObject::disconnect(ui->exportPushButton, SIGNAL(clicked()),
                      this, SLOT(exportWheel()));
+    QObject::disconnect(ui->addPushButton, SIGNAL(clicked()), this, SLOT(addWheel()));
+    if(previous)
+        QObject::disconnect(ui->deletePushButton, SIGNAL(clicked()), previous, SLOT(delWheel()));
 }
 
 void WheelWidget::drawWheel()
@@ -50,9 +58,8 @@ void WheelWidget::drawWheel()
         scene->clear();
     if(next)
         next->drawWheel();
-
     wheel::Point center = wheelCreator.getPositionOffset();
-    if(showExternalCircle)
+    if(showLineOfContact)
     {
         float a = 1/std::tan(wheelCreator.getContactAngle());
         float b = wheelCreator.getPrimitiveRadius();
@@ -315,13 +322,12 @@ void WheelWidget::setNext(WheelWidget *next)
     next = next;
 }
 
-WheelWidget* WheelWidget::addWheel(QWidget* parent)
+void WheelWidget::addWheel()
 {
-    if(next)
-        return next->addWheel(parent);
-    next = new WheelWidget(scene, wheelCreator.getContactAngle(), wheelCreator.getToothSpacing(), parent);
+    WheelWidget* new_next = next;
+    next = new WheelWidget(scene, tab, i, wheelCreator.getContactAngle(), wheelCreator.getToothSpacing());
     if(!next)
-        return 0;
+        return;
     next->setContactAngle(wheelCreator.getContactAngle());
     next->setNumberOfTeeth(wheelCreator.getNumberOfTeeth());
     next->setToothSpacing(wheelCreator.getToothSpacing());
@@ -334,8 +340,22 @@ WheelWidget* WheelWidget::addWheel(QWidget* parent)
     next->setShowExternalCircle(showExternalCircle);
     next->setShowPrimitiveCircle(showPrimitiveCircle);
     next->previous = this;
+    next->tab = tab;
+    next->next = new_next;
+    if(next->next)
+    {
+        next->next->previous = next;
+        QObject::disconnect(next->next->ui->deletePushButton, SIGNAL(clicked()), this, SLOT(delWheel()));
+        QObject::connect(next->next->ui->deletePushButton, SIGNAL(clicked()), next, SLOT(delWheel()));
+
+        QObject::disconnect(next->next, SIGNAL(redraw()), this, SLOT(askForRedraw()));
+        QObject::connect(next->next, SIGNAL(redraw()), next, SLOT(askForRedraw()));
+    }
+    tab->insertTab(i+1, next, QString("Wheel ").append(QString::number(i+2)));
+    next->incrI();
+    WheelWidget::refreshGearsValues();
     QObject::connect(next, SIGNAL(redraw()), this, SLOT(askForRedraw()));
-    return next;
+    QObject::connect(next->ui->deletePushButton, SIGNAL(clicked()), this, SLOT(delWheel()));
 }
 
 void WheelWidget::askForRedraw()
@@ -349,6 +369,44 @@ void WheelWidget::askForRedraw()
 void WheelWidget::setDrawing(bool st)
 {
     this->drawing = st;
+}
+
+void WheelWidget::incrI()
+{
+    i ++;
+    if(tab)
+        tab->setTabText(i, QString("Wheel ").append(QString::number(i+1)));
+    if(next)
+        next->incrI();
+
+}
+
+void WheelWidget::decrI()
+{
+    i --;
+    if(tab)
+        tab->setTabText(i+1, QString("Wheel ").append(QString::number(i+1)));
+    if(next)
+        next->decrI();
+
+}
+
+void WheelWidget::delWheel()
+{
+    if(!next)
+        return;
+    WheelWidget* toBeDeleted = next;
+    next = next->next;
+    toBeDeleted->next = 0;
+    if(next)
+    {
+        QObject::connect(next->ui->deletePushButton,SIGNAL(clicked()), this, SLOT(delWheel()));
+        QObject::connect(next,SIGNAL(redraw()), this, SLOT(askForRedraw()));
+        next->previous = this;
+        next->decrI();
+    }
+    delete toBeDeleted;
+    WheelWidget::refreshGearsValues();
 }
 
 WheelWidget::~WheelWidget()

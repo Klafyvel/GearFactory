@@ -26,9 +26,9 @@ public:
     WheelCreator();
 
     std::vector<Point> computeATooth(float begin) const;
-    std::vector<Point> getPoints() const;
+    std::vector<Point> getPoints();
     std::vector<Point> computeAHole(float begin) const;
-    std::vector<std::vector<Point>> getLighteningHoles() const;
+    std::vector<std::vector<Point>> getLighteningHoles();
 
     void computeValues();
 
@@ -76,6 +76,10 @@ protected:
     int pointResolution;
     float clearance;
     float armWidth;
+    bool needToRecomputeTooth;
+    bool needToRecomputeHoles;
+    std::vector<Point> hole;
+    std::vector<Point> tooth;
 };
 
 }

@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->graphicsView->setScene(&scene);
 
-    firstWheel = new WheelWidget(&scene);
+    firstWheel = new WheelWidget(&scene, ui->tabWidget, 0);
     if(!firstWheel)
             return;
     firstWheel->setDrawing(false);
@@ -20,13 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
     firstWheel->setHoleDiameter(20);
     firstWheel->setNumberOfLighteningHoles(3);
     firstWheel->setArmWidth(20);
+    firstWheel->setShowExternalCircle(false);
+    firstWheel->setShowLineOfContact(false);
+    firstWheel->setShowPrimitiveCircle(false);
     firstWheel->setDrawing(true);
     QObject::connect(firstWheel, SIGNAL(redraw()), firstWheel, SLOT(askForRedraw()));
 
-
-    addWheelPushButton = new QPushButton("Add..");
-    ui->tabWidget->setCornerWidget(addWheelPushButton);
-    ui->tabWidget->insertTab(0, firstWheel, "Wheel 1");
+    ui->tabWidget->insertTab(0,firstWheel,"Wheel 1");
 
     MainWindow::connectGui();
     MainWindow::refreshGearsValues();
@@ -50,7 +50,9 @@ void MainWindow::connectGui()
     QObject::connect(ui->rotationDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setRotation(double)));
     QObject::connect(ui->clearanceDoubleSpinBox, SIGNAL(valueChanged(double)),
                      this, SLOT(setClearance(double)));
-    QObject::connect(addWheelPushButton, SIGNAL(clicked()), this, SLOT(addWheel()));
+    QObject::connect(this->ui->showExternalCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowExternalCircle(int)));
+    QObject::connect(this->ui->showLineOfContactCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowLineOfContact(int)));
+    QObject::connect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
 }
 
 void MainWindow::disconnectGui()
@@ -66,7 +68,9 @@ void MainWindow::disconnectGui()
     QObject::disconnect(ui->rotationDoubleSpinBox, SIGNAL(valueChanged(double)), this, SLOT(setRotation(double)));
     QObject::disconnect(ui->clearanceDoubleSpinBox, SIGNAL(valueChanged(double)),
                      this, SLOT(setClearance(double)));
-    QObject::disconnect(addWheelPushButton, SIGNAL(clicked()), this, SLOT(addWheel()));
+    QObject::disconnect(this->ui->showExternalCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowExternalCircle(int)));
+    QObject::disconnect(this->ui->showLineOfContactCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowLineOfContact(int)));
+    QObject::disconnect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
 }
 
 void MainWindow::on_actionShow_View_triggered()
@@ -138,16 +142,20 @@ void MainWindow::setClearance(double c)
     firstWheel->refreshGearsValues();
 }
 
-void MainWindow::addWheel()
+void MainWindow::setShowExternalCircle(int st)
 {
-    WheelWidget* wheel = firstWheel->addWheel();
-    if (!wheel)
-    {
-        QMessageBox::critical(this, "Error", "Could not add a wheel...");
-        return;
-    }
-    int i = ui->tabWidget->count();
-    ui->tabWidget->insertTab(i, wheel, QString("Wheel ").append(QString::number(i+1)));
-    ui->tabWidget->setCurrentIndex(i);
+    firstWheel->setShowExternalCircle(!!st);
+    firstWheel->refreshGearsValues();
+}
+
+void MainWindow::setShowLineOfContact(int st)
+{
+    firstWheel->setShowLineOfContact(!!st);
+    firstWheel->refreshGearsValues();
+}
+
+void MainWindow::setShowPrimitiveCircle(int st)
+{
+    firstWheel->setShowPrimitiveCircle(!!st);
     firstWheel->refreshGearsValues();
 }

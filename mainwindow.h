@@ -35,8 +35,9 @@ public slots:
     void setRotation(double alpha);
     void setClearance(double c);
     void setContactAngle(double alpha);
-
-    void addWheel();
+    void setShowExternalCircle(int st);
+    void setShowLineOfContact(int st);
+    void setShowPrimitiveCircle(int st);
 
 private slots:
     void on_actionShow_View_triggered();
@@ -47,7 +48,6 @@ private:
     QGraphicsScene scene;
     QTimer timer;
     WheelWidget* firstWheel;
-    QPushButton* addWheelPushButton;
 };
 
 #endif // MAINWINDOW_H

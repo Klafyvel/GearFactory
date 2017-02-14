@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>128</height>
+    <width>686</width>
+    <height>130</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -141,16 +141,30 @@ Lightening holes</string>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="addPushButton">
-       <property name="text">
-        <string>Add </string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="addPushButton">
+         <property name="text">
+          <string>Add </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addStackedPushButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Add Stacked</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="addStackedPushButton">
+      <widget class="QPushButton" name="deletePushButton">
        <property name="text">
-        <string>Add Stacked</string>
+        <string>Delete</string>
        </property>
       </widget>
      </item>

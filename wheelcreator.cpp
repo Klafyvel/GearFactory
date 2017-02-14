@@ -3,7 +3,8 @@ namespace wheel {
 
 WheelCreator::WheelCreator() : positionOffset(0,0)
 {
-
+    needToRecomputeHoles = true;
+    needToRecomputeTooth = true;
 }
 
 float WheelCreator::getPrimitiveRadius() const
@@ -100,16 +101,20 @@ std::vector<Point> WheelCreator::computeATooth(float begin) const
     return result;
 }
 
-std::vector<Point> WheelCreator::getPoints() const
+std::vector<Point> WheelCreator::getPoints()
 {
     std::vector<Point> result(0);
-    std::vector<Point> tooth = WheelCreator::computeATooth(this->rotationOffset);
+    if(needToRecomputeTooth)
+    {
+        tooth = WheelCreator::computeATooth(0);
+        needToRecomputeTooth = false;
+    }
     for(int begin=0; begin<this->numberOfTeeth; begin++)
     {
         for(Point p : tooth)
         {
-            float x = p.y * cos(p.x + begin*2*PI/this->numberOfTeeth) + this->positionOffset.x;
-            float y = p.y * sin(p.x + begin*2*PI/this->numberOfTeeth) + this->positionOffset.y;
+            float x = p.y * cos(p.x + begin*2*PI/this->numberOfTeeth + this->rotationOffset) + this->positionOffset.x;
+            float y = p.y * sin(p.x + begin*2*PI/this->numberOfTeeth + this->rotationOffset) + this->positionOffset.y;
             result.push_back(Point(x,y));
         }
     }
@@ -134,6 +139,8 @@ void WheelCreator::setPrimitiveRadius(float r)
     this->primitiveRadius = r;
     this->numberOfTeeth = r * 2 * PI / this->toothSpacing;
     this->externalRadius = this->primitiveRadius + m/2;
+    needToRecomputeHoles = true;
+    needToRecomputeTooth = true;
 }
 
 void WheelCreator::setExternalRadius(float r)
@@ -142,34 +149,43 @@ void WheelCreator::setExternalRadius(float r)
     float m = this->toothSpacing / PI;
     this->primitiveRadius = r - m/2;
     this->numberOfTeeth = this->primitiveRadius * 2 * PI / this->toothSpacing;
+    needToRecomputeHoles = true;
+    needToRecomputeTooth = true;
 }
 
 void WheelCreator::setContactAngle(float alpha)
 {
     this->contactAngle = alpha;
     WheelCreator::computeValues();
+    needToRecomputeTooth = true;
 }
 
 void WheelCreator::setNumberOfTeeth(int z)
 {
     this->numberOfTeeth = z;
     WheelCreator::computeValues();
+    needToRecomputeHoles = true;
+    needToRecomputeTooth = true;
 }
 
 void WheelCreator::setToothSpacing(float p)
 {
     this->toothSpacing = p;
     WheelCreator::computeValues();
+    needToRecomputeHoles = true;
+    needToRecomputeTooth = true;
 }
 
 void WheelCreator::setHoleRadius(float r)
 {
     this->holeRadius = r;
+    needToRecomputeHoles = true;
 }
 
 void WheelCreator::setNumberOfLighteningHole(int n)
 {
     this->numberOfLighteningHole = n;
+    needToRecomputeHoles = true;
 }
 
 void WheelCreator::setPositionOffset(float x, float y)
@@ -185,6 +201,8 @@ void WheelCreator::setPositionOffset(Point p)
 void WheelCreator::setPointResolution(int n)
 {
     this->pointResolution = n;
+    needToRecomputeHoles = true;
+    needToRecomputeTooth = true;
 }
 
 void WheelCreator::setRotationOffset(float alpha)
@@ -203,6 +221,7 @@ void WheelCreator::syncWith(WheelCreator &wheel) const
 void WheelCreator::setClearance(float c)
 {
     this->clearance = c;
+    needToRecomputeTooth = true;
 }
 
 std::vector<Point> WheelCreator::computeAHole(float begin) const
@@ -232,17 +251,21 @@ std::vector<Point> WheelCreator::computeAHole(float begin) const
     return result;
 }
 
-std::vector<std::vector<Point>> WheelCreator::getLighteningHoles() const
+std::vector<std::vector<Point>> WheelCreator::getLighteningHoles()
 {
-    std::vector<Point> hole = WheelCreator::computeAHole(this->rotationOffset);
+    if(needToRecomputeHoles)
+    {
+        hole = WheelCreator::computeAHole(0);
+        needToRecomputeHoles = false;
+    }
     std::vector<std::vector<Point>> result(0);
     for(int i=0; i<this->numberOfLighteningHole; i++)
     {
         std::vector<Point> thisHole(0);
         for(Point p : hole)
         {
-            float x = p.y * cos(p.x + i*2*PI/this->numberOfLighteningHole) + this->positionOffset.x;
-            float y = p.y * sin(p.x + i*2*PI/this->numberOfLighteningHole) + this->positionOffset.y;
+            float x = p.y * cos(p.x + i*2*PI/this->numberOfLighteningHole + this->rotationOffset) + this->positionOffset.x;
+            float y = p.y * sin(p.x + i*2*PI/this->numberOfLighteningHole + this->rotationOffset) + this->positionOffset.y;
             thisHole.push_back(Point(x,y));
         }
         result.push_back(thisHole);
@@ -254,6 +277,7 @@ std::vector<std::vector<Point>> WheelCreator::getLighteningHoles() const
 void WheelCreator::setArmWidth(float w)
 {
     this->armWidth = w;
+    needToRecomputeHoles = true;
 }
 
 float WheelCreator::getArmWidth() const

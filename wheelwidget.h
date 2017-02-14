@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QTabWidget>
 
 #include "wheelcreator.h"
 #include "exportdialog.h"
@@ -19,15 +20,18 @@ class WheelWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit WheelWidget(QGraphicsScene* scene, float contactAngle=0, float toothSpacing=1, QWidget *parent = 0);
+    explicit WheelWidget(QGraphicsScene* scene, QTabWidget* tab=0, int i=0, float contactAngle=0, float toothSpacing=1, QWidget *parent = 0);
     ~WheelWidget();
     void exportSVG(QString filename);
+    void incrI();
+    void decrI();
 
 signals:
     void redraw();
 
 public slots:
-    WheelWidget* addWheel(QWidget *parent=0);
+    void addWheel();
+    void delWheel();
     void askForRedraw();
     void drawWheel();
     void connectGui();
@@ -68,6 +72,9 @@ private:
     bool showLineOfContact;
     bool showPrimitiveCircle;
     bool showExternalCircle;
+
+    int i;
+    QTabWidget* tab;
 
     bool drawing;
 };
