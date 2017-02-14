@@ -39,9 +39,9 @@ public slots:
     void setShowLineOfContact(int st);
     void setShowPrimitiveCircle(int st);
 
-private slots:
-    void on_actionShow_View_triggered();
-    void on_actionShow_Gear_triggered();
+    void handleViewCenter(int id);
+    void centerView(int i);
+    void manageView();
 
 private:
     Ui::MainWindow *ui;

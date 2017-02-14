@@ -5,8 +5,8 @@ WheelWidget::WheelWidget(QGraphicsScene *scene, QTabWidget* tab, int i, float co
     QWidget(parent),
     ui(new Ui::WheelWidget)
 {
-    this->i = i;
     ui->setupUi(this);
+    this->i = i;
     this->scene = scene;
     next = 0;
     previous = 0;
@@ -16,6 +16,8 @@ WheelWidget::WheelWidget(QGraphicsScene *scene, QTabWidget* tab, int i, float co
     wheelCreator.setNumberOfLighteningHole(0);
     drawing = true;
     this->tab = tab;
+    currentPen = QPen();
+    WheelWidget::setNoFocusPen();
 }
 
 void WheelWidget::connectGui()
@@ -33,6 +35,7 @@ void WheelWidget::connectGui()
     QObject::connect(ui->addPushButton, SIGNAL(clicked()), this, SLOT(addWheel()));
     if(previous)
         QObject::connect(ui->deletePushButton, SIGNAL(clicked()), previous, SLOT(delWheel()));
+    QObject::connect(tab, SIGNAL(currentChanged(int)), this, SLOT(setFocusPen(int)));
 }
 
 void WheelWidget::disconnectGui()
@@ -50,6 +53,7 @@ void WheelWidget::disconnectGui()
     QObject::disconnect(ui->addPushButton, SIGNAL(clicked()), this, SLOT(addWheel()));
     if(previous)
         QObject::disconnect(ui->deletePushButton, SIGNAL(clicked()), previous, SLOT(delWheel()));
+    QObject::disconnect(tab, SIGNAL(currentChanged(int)), this, SLOT(setFocusPen(int)));
 }
 
 void WheelWidget::drawWheel()
@@ -64,22 +68,22 @@ void WheelWidget::drawWheel()
         float a = 1/std::tan(wheelCreator.getContactAngle());
         float b = wheelCreator.getPrimitiveRadius();
 
-        scene->addLine(b/2+center.x,a*b/2+center.y,3.0/2.0*b+center.x,-a*b/2+center.y);
+        scene->addLine(b/2+center.x,a*b/2+center.y,3.0/2.0*b+center.x,-a*b/2+center.y, currentPen);
     }
 
     std::vector<wheel::Point> points = wheelCreator.getPoints();
     wheel::Point current = points[0];
     for(wheel::Point next : points)
     {
-        scene->addLine(current.x, current.y, next.x, next.y);
+        scene->addLine(current.x, current.y, next.x, next.y, currentPen);
         current = next;
     }
 
     float r = wheelCreator.getHoleRadius();
     float cross_size = r*1.5;
-    scene->addLine(center.x-cross_size,center.y,center.x+cross_size,center.y);
-    scene->addLine(center.x,center.y-cross_size,center.x,center.y+cross_size);
-    scene->addEllipse(center.x - r, center.y - r, r*2, r*2);
+    scene->addLine(center.x-cross_size,center.y,center.x+cross_size,center.y, currentPen);
+    scene->addLine(center.x,center.y-cross_size,center.x,center.y+cross_size, currentPen);
+    scene->addEllipse(center.x - r, center.y - r, r*2, r*2, currentPen);
 
     std::vector<std::vector<wheel::Point>> holes = wheelCreator.getLighteningHoles();
     for(std::vector<wheel::Point> points : holes)
@@ -87,17 +91,17 @@ void WheelWidget::drawWheel()
         current = points[0];
         for(wheel::Point next : points)
         {
-            scene->addLine(current.x, current.y, next.x, next.y);
+            scene->addLine(current.x, current.y, next.x, next.y, currentPen);
             current = next;
         }
     }
 
     r = wheelCreator.getPrimitiveRadius();
     if(showPrimitiveCircle)
-        scene->addEllipse(center.x - r, center.y - r, r*2, r*2);
+        scene->addEllipse(center.x - r, center.y - r, r*2, r*2, currentPen);
     r = wheelCreator.getExternalRadius();
     if(showExternalCircle)
-        scene->addEllipse(center.x - r, center.y - r, r*2, r*2);
+        scene->addEllipse(center.x - r, center.y - r, r*2, r*2, currentPen);
 }
 
 void WheelWidget::refreshGearsValues()
@@ -412,4 +416,47 @@ void WheelWidget::delWheel()
 WheelWidget::~WheelWidget()
 {
     delete ui;
+}
+
+void WheelWidget::setFocusPen()
+{
+    currentPen.setColor(QColor(0,0,0));
+    currentPen.setWidth(1);
+}
+
+void WheelWidget::setNoFocusPen()
+{
+    currentPen.setColor(QColor(0,100,150));
+    currentPen.setWidth(0);
+}
+
+void WheelWidget::setFocusPen(int i)
+{
+    if(i == this->i)
+        WheelWidget::setFocusPen();
+    else
+        WheelWidget::setNoFocusPen();
+    emit redraw();
+}
+
+QRect WheelWidget::boundingRect() const
+{
+    wheel::Point p = wheelCreator.getPositionOffset();
+    float r = wheelCreator.getExternalRadius();
+    return QRect(p.x-r, p.y-r, 2*r,2*r);
+}
+
+QRect WheelWidget::fullSize() const
+{
+    QRect res(0,0,0,0);
+    float r = wheelCreator.getExternalRadius();
+    res.setWidth(2*r);
+    res.setHeight(r);
+    if(next)
+    {
+        QRect nextRes = next->fullSize();
+        res.setWidth(2*r + nextRes.width());
+        res.setHeight(std::max(nextRes.height(), res.height()));
+    }
+    return res;
 }

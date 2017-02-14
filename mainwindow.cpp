@@ -22,14 +22,15 @@ MainWindow::MainWindow(QWidget *parent) :
     firstWheel->setArmWidth(20);
     firstWheel->setShowExternalCircle(false);
     firstWheel->setShowLineOfContact(false);
-    firstWheel->setShowPrimitiveCircle(false);
+    firstWheel->setShowPrimitiveCircle(true);
     firstWheel->setDrawing(true);
-    QObject::connect(firstWheel, SIGNAL(redraw()), firstWheel, SLOT(askForRedraw()));
+    QObject::connect(firstWheel, SIGNAL(redraw()), this, SLOT(manageView()));
 
     ui->tabWidget->insertTab(0,firstWheel,"Wheel 1");
 
     MainWindow::connectGui();
     MainWindow::refreshGearsValues();
+    MainWindow::manageView();
 }
 
 MainWindow::~MainWindow()
@@ -53,6 +54,7 @@ void MainWindow::connectGui()
     QObject::connect(this->ui->showExternalCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowExternalCircle(int)));
     QObject::connect(this->ui->showLineOfContactCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowLineOfContact(int)));
     QObject::connect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
+    QObject::connect(ui->viewButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleViewCenter(int)));
 }
 
 void MainWindow::disconnectGui()
@@ -71,16 +73,7 @@ void MainWindow::disconnectGui()
     QObject::disconnect(this->ui->showExternalCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowExternalCircle(int)));
     QObject::disconnect(this->ui->showLineOfContactCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowLineOfContact(int)));
     QObject::disconnect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
-}
-
-void MainWindow::on_actionShow_View_triggered()
-{
-    ui->groupBoxView->setFocus();
-}
-
-void MainWindow::on_actionShow_Gear_triggered()
-{
-    ui->gearGroupBox->setFocus();
+    QObject::disconnect(ui->viewButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleViewCenter(int)));
 }
 
 void MainWindow::refreshGearsValues()
@@ -158,4 +151,24 @@ void MainWindow::setShowPrimitiveCircle(int st)
 {
     firstWheel->setShowPrimitiveCircle(!!st);
     firstWheel->refreshGearsValues();
+}
+
+void MainWindow::centerView(int i)
+{
+    WheelWidget* currentWheel = static_cast<WheelWidget*>(ui->tabWidget->widget(i));
+    ui->graphicsView->fitInView(currentWheel->boundingRect(), Qt::KeepAspectRatio);
+}
+
+void MainWindow::handleViewCenter(int id)
+{
+    MainWindow::manageView();
+}
+
+void MainWindow::manageView()
+{
+    if(ui->viewButtonGroup->checkedId() == -3)
+    {
+        MainWindow::centerView(ui->tabWidget->currentIndex());
+    }
+    firstWheel->askForRedraw();
 }

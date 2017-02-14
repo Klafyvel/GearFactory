@@ -26,6 +26,9 @@ public:
     void incrI();
     void decrI();
 
+    QRect boundingRect() const;
+    QRect fullSize() const;
+
 signals:
     void redraw();
 
@@ -60,6 +63,9 @@ public slots:
     void setShowExternalCircle(bool st);
     void setNext(WheelWidget* next);
 
+    void setFocusPen();
+    void setNoFocusPen();
+    void setFocusPen(int i);
 
 private:
     Ui::WheelWidget *ui;
@@ -77,6 +83,8 @@ private:
     QTabWidget* tab;
 
     bool drawing;
+
+    QPen currentPen;
 };
 
 #endif // WHEELWIDGET_H
