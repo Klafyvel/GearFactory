@@ -55,6 +55,7 @@ void MainWindow::connectGui()
     QObject::connect(this->ui->showLineOfContactCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowLineOfContact(int)));
     QObject::connect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
     QObject::connect(ui->viewButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleViewCenter(int)));
+    QObject::connect(ui->animationSpeedSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setAnimationSpeed(int)));
 }
 
 void MainWindow::disconnectGui()
@@ -74,6 +75,7 @@ void MainWindow::disconnectGui()
     QObject::disconnect(this->ui->showLineOfContactCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowLineOfContact(int)));
     QObject::disconnect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
     QObject::disconnect(ui->viewButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleViewCenter(int)));
+    QObject::disconnect(ui->animationSpeedSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setAnimationSpeed(int)));
 }
 
 void MainWindow::refreshGearsValues()
@@ -118,7 +120,7 @@ void MainWindow::setAnimation(int state)
 
 void MainWindow::animate()
 {
-    float d = (float)(ui->animationSpeedSpinBox->value())/100 * PI/30;
+    float d = PI/300;
     firstWheel->rotate(d);
     firstWheel->refreshGearsValues();
 }
@@ -170,5 +172,14 @@ void MainWindow::manageView()
     {
         MainWindow::centerView(ui->tabWidget->currentIndex());
     }
+    else
+    {
+        ui->graphicsView->fitInView(firstWheel->fullSize(), Qt::KeepAspectRatio);
+    }
     firstWheel->askForRedraw();
+}
+
+void MainWindow::setAnimationSpeed(int percent)
+{
+    timer.setInterval((1-percent/100)*70 + percent/100*5);
 }

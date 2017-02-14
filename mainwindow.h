@@ -42,6 +42,7 @@ public slots:
     void handleViewCenter(int id);
     void centerView(int i);
     void manageView();
+    void setAnimationSpeed(int percent);
 
 private:
     Ui::MainWindow *ui;

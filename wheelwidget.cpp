@@ -451,7 +451,7 @@ QRect WheelWidget::fullSize() const
     QRect res(0,0,0,0);
     float r = wheelCreator.getExternalRadius();
     res.setWidth(2*r);
-    res.setHeight(r);
+    res.setHeight(2*r);
     if(next)
     {
         QRect nextRes = next->fullSize();
