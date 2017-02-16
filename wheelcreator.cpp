@@ -224,12 +224,20 @@ void WheelCreator::setRotationOffset(float alpha)
     this->rotationOffset = alpha;
 }
 
-void WheelCreator::syncWith(WheelCreator &wheel) const
+void WheelCreator::syncWith(WheelCreator &wheel, bool stacked) const
 {
-    float d = this->primitiveRadius + wheel.primitiveRadius;
-    float r = this->primitiveRadius/wheel.primitiveRadius;
-    wheel.setPositionOffset(this->positionOffset.x+d, this->positionOffset.y);
-    wheel.setRotationOffset((1+((this->numberOfTeeth)%2)/2+wheel.numberOfTeeth%2)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
+    if (!stacked)
+    {
+        float d = this->primitiveRadius + wheel.primitiveRadius;
+        float r = this->primitiveRadius/wheel.primitiveRadius;
+        wheel.setPositionOffset(this->positionOffset.x+d, this->positionOffset.y);
+        wheel.setRotationOffset((1+((this->numberOfTeeth)%2)/2+wheel.numberOfTeeth%2)*PI/wheel.numberOfTeeth - this->rotationOffset * r);
+    }
+    else
+    {
+        wheel.setPositionOffset(this->positionOffset);
+        wheel.setRotationOffset(this->rotationOffset);
+    }
 }
 
 void WheelCreator::setClearance(float c)

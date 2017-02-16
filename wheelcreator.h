@@ -35,7 +35,7 @@ public:
 
     void computeValues();
 
-    void syncWith(WheelCreator& wheel) const;
+    void syncWith(WheelCreator& wheel, bool stacked=false) const;
 
     // Getters
     float getPrimitiveRadius() const;

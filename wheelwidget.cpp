@@ -7,6 +7,9 @@ WheelWidget::WheelWidget(QGraphicsScene *scene, QTabWidget* tab, int i, float co
 {
     ui->setupUi(this);
     this->i = i;
+
+    ui->deletePushButton->setEnabled(false);
+    ui->stackedCheckBox->setEnabled(false);
     this->scene = scene;
     next = 0;
     previous = 0;
@@ -36,6 +39,8 @@ void WheelWidget::connectGui()
     if(previous)
         QObject::connect(ui->deletePushButton, SIGNAL(clicked()), previous, SLOT(delWheel()));
     QObject::connect(tab, SIGNAL(currentChanged(int)), this, SLOT(setFocusPen(int)));
+    QObject::connect(ui->addStackedPushButton, SIGNAL(clicked()), this, SLOT(addStackedWheel()));
+    QObject::connect(ui->stackedCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setStacked(int)));
 }
 
 void WheelWidget::disconnectGui()
@@ -54,6 +59,8 @@ void WheelWidget::disconnectGui()
     if(previous)
         QObject::disconnect(ui->deletePushButton, SIGNAL(clicked()), previous, SLOT(delWheel()));
     QObject::disconnect(tab, SIGNAL(currentChanged(int)), this, SLOT(setFocusPen(int)));
+    QObject::disconnect(ui->addStackedPushButton, SIGNAL(clicked()), this, SLOT(addStackedWheel()));
+    QObject::disconnect(ui->stackedCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setStacked(int)));
 }
 
 void WheelWidget::drawWheel()
@@ -104,6 +111,16 @@ void WheelWidget::drawWheel()
         scene->addEllipse(center.x - r, center.y - r, r*2, r*2, currentPen);
 }
 
+void WheelWidget::setStacked(int i)
+{
+    WheelWidget::refreshGearsValues();
+    if(previous)
+    {
+        previous->setNumberOfLighteningHoles(0);
+    }
+    WheelWidget::setNumberOfLighteningHoles(0);
+}
+
 void WheelWidget::refreshGearsValues()
 {
     WheelWidget::disconnectGui();
@@ -115,9 +132,11 @@ void WheelWidget::refreshGearsValues()
     ui->numberOfTeethSpinBox->setValue(wheelCreator.getNumberOfTeeth());
     ui->armWidthDoubleSpinBox->setValue(wheelCreator.getArmWidth());
     WheelWidget::connectGui();
+    if(previous)
+        previous->wheelCreator.syncWith(wheelCreator, ui->stackedCheckBox->isChecked());
     if(next)
     {
-        wheelCreator.syncWith(next->wheelCreator);
+        wheelCreator.syncWith(next->wheelCreator, next->ui->stackedCheckBox->isChecked());
         next->drawing=false;
         next->setContactAngle(wheelCreator.getContactAngle());
         next->setToothSpacing(wheelCreator.getToothSpacing());
@@ -144,7 +163,7 @@ void WheelWidget::setNumberOfTeeth(int z)
 {
     wheelCreator.setNumberOfTeeth(z);
     if(previous)
-        previous->wheelCreator.syncWith(wheelCreator);
+        previous->wheelCreator.syncWith(wheelCreator, ui->stackedCheckBox->isChecked());
     WheelWidget::refreshGearsValues();
 }
 
@@ -329,12 +348,21 @@ void WheelWidget::setNext(WheelWidget *next)
     next = next;
 }
 
+void WheelWidget::addStackedWheel()
+{
+    WheelWidget::addWheel();
+    next->ui->stackedCheckBox->setChecked(true);
+    WheelWidget::refreshGearsValues();
+}
+
 void WheelWidget::addWheel()
 {
     WheelWidget* new_next = next;
     next = new WheelWidget(scene, tab, i, wheelCreator.getContactAngle(), wheelCreator.getToothSpacing());
     if(!next)
         return;
+    next->ui->deletePushButton->setEnabled(true);
+    next->ui->stackedCheckBox->setEnabled(true);
     next->setContactAngle(wheelCreator.getContactAngle());
     next->setNumberOfTeeth(wheelCreator.getNumberOfTeeth());
     next->setToothSpacing(wheelCreator.getToothSpacing());
@@ -360,6 +388,7 @@ void WheelWidget::addWheel()
     }
     tab->insertTab(i+1, next, QString("Wheel ").append(QString::number(i+2)));
     next->incrI();
+    next->ui->stackedCheckBox->setChecked(false);
     WheelWidget::refreshGearsValues();
     QObject::connect(next, SIGNAL(redraw()), this, SLOT(askForRedraw()));
     QObject::connect(next->ui->deletePushButton, SIGNAL(clicked()), this, SLOT(delWheel()));
@@ -405,6 +434,7 @@ void WheelWidget::delWheel()
     WheelWidget* toBeDeleted = next;
     next = next->next;
     toBeDeleted->next = 0;
+    next->ui->stackedCheckBox->setChecked(false);
     if(next)
     {
         QObject::connect(next->ui->deletePushButton,SIGNAL(clicked()), this, SLOT(delWheel()));
@@ -458,7 +488,12 @@ QRect WheelWidget::fullSize() const
     if(next)
     {
         QRect nextRes = next->fullSize();
-        res.setWidth(2*r + nextRes.width());
+        if(ui->stackedCheckBox->isChecked())
+        {
+            res.setWidth(nextRes.width());
+        }
+        else
+            res.setWidth(res.width() + nextRes.width());
         res.setHeight(std::max(nextRes.height(), res.height()));
     }
     return res;

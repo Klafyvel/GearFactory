@@ -33,6 +33,7 @@ signals:
     void redraw();
 
 public slots:
+    void addStackedWheel();
     void addWheel();
     void delWheel();
     void askForRedraw();
@@ -55,6 +56,7 @@ public slots:
     void setRotation(double alpha);
     void rotate(double step);
     void setDrawing(bool st);
+    void setStacked(int i);
 
     void exportWheel();
 
