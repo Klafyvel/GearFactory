@@ -37,3 +37,6 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
     wheelwidget.ui \
     exportdialog.ui
+
+DISTFILES += \
+    LICENSE

@@ -1,3 +1,21 @@
+/*
+Gear Factory
+Copyright (C) 2017  Hugo LEVY-FALK
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "wheelwidget.h"
 #include "ui_wheelwidget.h"
 
@@ -434,9 +452,9 @@ void WheelWidget::delWheel()
     WheelWidget* toBeDeleted = next;
     next = next->next;
     toBeDeleted->next = 0;
-    next->ui->stackedCheckBox->setChecked(false);
     if(next)
     {
+        next->ui->stackedCheckBox->setChecked(false);
         QObject::connect(next->ui->deletePushButton,SIGNAL(clicked()), this, SLOT(delWheel()));
         QObject::connect(next,SIGNAL(redraw()), this, SLOT(askForRedraw()));
         next->previous = this;

@@ -1,3 +1,21 @@
+/*
+Gear Factory
+Copyright (C) 2017  Hugo LEVY-FALK
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -56,6 +74,7 @@ void MainWindow::connectGui()
     QObject::connect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
     QObject::connect(ui->viewButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleViewCenter(int)));
     QObject::connect(ui->animationSpeedSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setAnimationSpeed(int)));
+    QObject::connect(ui->licensePushButton, SIGNAL(clicked()), this, SLOT(licenseEvent()));
 }
 
 void MainWindow::disconnectGui()
@@ -76,6 +95,7 @@ void MainWindow::disconnectGui()
     QObject::disconnect(this->ui->showPrimitiveCircleCheckBox, SIGNAL(stateChanged(int)), this, SLOT(setShowPrimitiveCircle(int)));
     QObject::disconnect(ui->viewButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(handleViewCenter(int)));
     QObject::disconnect(ui->animationSpeedSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setAnimationSpeed(int)));
+    QObject::disconnect(ui->licensePushButton, SIGNAL(clicked()), this, SLOT(licenseEvent()));
 }
 
 void MainWindow::refreshGearsValues()
@@ -184,8 +204,7 @@ void MainWindow::setAnimationSpeed(int percent)
     timer.setInterval((1-percent/100)*70 + percent/100*5);
 }
 
-void MainWindow::on_actionExport_current_triggered()
+void MainWindow::licenseEvent()
 {
-    std::cout << "bli" << std::endl;
-    static_cast<WheelWidget*>(ui->tabWidget->currentWidget())->exportWheel();
+    QMessageBox::about(this, "License", "Gear Factory\nCopyright (C) 2017  Hugo LEVY-FALK\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <http://www.gnu.org/licenses/>.\n");
 }
