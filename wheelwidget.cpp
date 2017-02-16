@@ -229,6 +229,7 @@ void WheelWidget::setShowExternalCircle(bool st)
 
 void WheelWidget::exportSVG(QString filename)
 {
+    /*
     float r_ext = wheelCreator.getExternalRadius();
     QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
     result.append("<svg width=\"");
@@ -239,10 +240,12 @@ void WheelWidget::exportSVG(QString filename)
     result.append("<title>Gear factory</title>\n");
     result.append("<desc>File created by Gear Factory.</desc>\n");
 
-    result.append("<g>\n");
+    result.append("<g class=\"wheel\" id=\"wheel");
+    result.append(QString::number(i+1));
+    result.append(">\n");
 
     // Tooth
-    result.append("<g>\n");
+    result.append("<g class=\"frame\">\n");
     wheel::Point previous;
     wheel::Point first;
     bool isFirst = true;
@@ -309,7 +312,7 @@ void WheelWidget::exportSVG(QString filename)
 
     result.append("</g>\n");
     result.append("</svg>\n");
-
+    */
     // Export
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -318,7 +321,7 @@ void WheelWidget::exportSVG(QString filename)
         return;
     }
     QTextStream out(&file);
-    out << result;
+    out << wheelCreator.svg(i);
 }
 
 void WheelWidget::setNext(WheelWidget *next)

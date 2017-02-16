@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <QString>
 
 namespace wheel {
 
@@ -25,10 +26,12 @@ class WheelCreator
 public:
     WheelCreator();
 
+    std::vector<Point> toothProfile() const;
     std::vector<Point> computeATooth(float begin) const;
     std::vector<Point> getPoints();
     std::vector<Point> computeAHole(float begin) const;
     std::vector<std::vector<Point>> getLighteningHoles();
+    QString svg(int i=0);
 
     void computeValues();
 

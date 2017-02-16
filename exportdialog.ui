@@ -49,7 +49,7 @@
         <item>
          <widget class="QLineEdit" name="fileNameLineEdit">
           <property name="text">
-           <string/>
+           <string>./gearFactory.svg</string>
           </property>
          </widget>
         </item>
@@ -93,6 +93,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>exportPushButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>fileNameLineEdit</tabstop>
+  <tabstop>fileNamePushButton</tabstop>
+  <tabstop>formatComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

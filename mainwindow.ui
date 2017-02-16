@@ -50,6 +50,9 @@
             <property name="text">
              <string>Full &amp;gear view</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
             <attribute name="buttonGroup">
              <string notr="true">viewButtonGroup</string>
             </attribute>
@@ -61,7 +64,7 @@
              <string>One wheel centered</string>
             </property>
             <property name="checked">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">viewButtonGroup</string>
@@ -329,6 +332,14 @@ speed</string>
     </item>
    </layout>
   </widget>
+  <action name="actionExport_current">
+   <property name="text">
+    <string>Export current</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+E</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

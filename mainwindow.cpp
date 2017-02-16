@@ -183,3 +183,9 @@ void MainWindow::setAnimationSpeed(int percent)
 {
     timer.setInterval((1-percent/100)*70 + percent/100*5);
 }
+
+void MainWindow::on_actionExport_current_triggered()
+{
+    std::cout << "bli" << std::endl;
+    static_cast<WheelWidget*>(ui->tabWidget->currentWidget())->exportWheel();
+}

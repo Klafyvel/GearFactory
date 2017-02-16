@@ -44,6 +44,9 @@ public slots:
     void manageView();
     void setAnimationSpeed(int percent);
 
+private slots:
+    void on_actionExport_current_triggered();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene scene;

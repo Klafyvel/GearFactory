@@ -1,4 +1,4 @@
-#include "wheelcreator.h"
+﻿#include "wheelcreator.h"
 namespace wheel {
 
 WheelCreator::WheelCreator() : positionOffset(0,0)
@@ -56,7 +56,21 @@ float WheelCreator::getClearance() const
 {
     return this->clearance;
 }
-
+std::vector<Point> WheelCreator::toothProfile() const
+{
+    std::vector<Point> result(0);
+    float m = this->toothSpacing / PI;
+    float r_base = this->primitiveRadius * cos(this->contactAngle);
+    float r_foot = this->primitiveRadius - m;
+    float tooth_domain_max = std::acos(r_base/this->externalRadius);
+    float tooth_domain_min = (r_foot<r_base)?0:std::acos(r_base/r_foot);
+    for(float u=0; u<this->pointResolution; u++)
+    {
+        float t = (1-u/this->pointResolution) * (-tooth_domain_max) + u/this->pointResolution * (-tooth_domain_min);
+        result.push_back(Point(std::tan(t)-t,r_base / cos(t)));
+    }
+    return result;
+}
 std::vector<Point> WheelCreator::computeATooth(float begin) const
 {
     std::vector<Point>result(0);
@@ -283,6 +297,125 @@ void WheelCreator::setArmWidth(float w)
 float WheelCreator::getArmWidth() const
 {
     return this->armWidth;
+}
+
+QString WheelCreator::svg(int i)
+{
+    float m = this->toothSpacing / PI;
+    float r_base = this->primitiveRadius * cos(this->contactAngle);
+    float r_foot = this->primitiveRadius - m;
+    float tooth_domain_max = std::acos(r_base/this->externalRadius);
+    float deport = (1- this->clearance)*(PI / this->numberOfTeeth / 2 + std::tan(this->contactAngle) - this->contactAngle);
+    float top_max = deport - std::tan(tooth_domain_max) + tooth_domain_max;
+    float r_ext = externalRadius;
+
+    std::vector<Point> toothSide = WheelCreator::toothProfile();
+
+    QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
+    result.append("<svg width=\"");
+    result.append(QString::number(r_ext*2));
+    result.append("mm\" height=\"");
+    result.append(QString::number(r_ext*2));
+    result.append("mm\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
+    result.append(" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 ");
+    result.append(QString::number(r_ext*2)).append(" ");
+    result.append(QString::number(r_ext*2)).append("\" >\n");
+    result.append("<title>Gear factory</title>\n");
+    result.append("<desc>File created by Gear Factory.</desc>\n");
+
+    result.append("<g class=\"wheel\" id=\"wheel");
+    result.append(QString::number(i+1));
+    result.append("\">\n");
+
+    // Tooth
+    result.append("<g class=\"frame\">\n");
+    float alpha = -top_max;
+    result.append("<path stroke=\"black\" stroke-width=\"1px\" fill=\"none\" d=\"M");
+    result.append(QString::number(r_ext*std::cos(alpha)+r_ext)).append(",").append(QString::number(r_ext*std::sin(alpha)+r_ext)).append(" ");
+    for(int n=0; n<numberOfTeeth; n++)
+    {
+        float alpha0 = alpha;
+        alpha += 2*top_max;
+        result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(" ");
+        result.append("0 0,1 ").append(QString::number(r_ext*cos(alpha)+r_ext)).append(",");
+        result.append(QString::number(r_ext*sin(alpha)+r_ext)).append(" ");
+
+        alpha += std::tan(tooth_domain_max) - tooth_domain_max;
+
+        for(Point p : toothSide)
+        {
+            result.append("L");
+            result.append(QString::number(p.y * std::cos(alpha + p.x)+r_ext)).append(",");
+            result.append(QString::number(p.y * std::sin(alpha + p.x)+r_ext)).append(" ");
+        }
+
+        result.append("L").append(QString::number(r_foot*std::cos(alpha)+r_ext));
+        result.append(",").append(QString::number(r_foot*std::sin(alpha)+r_ext)).append(" ");
+        alpha = alpha0 + 2*PI/numberOfTeeth - deport+top_max;
+        result.append("A").append(QString::number(r_foot)).append(",").append(QString::number(r_foot)).append(" ");
+        result.append("0 0,1").append(QString::number(r_foot*std::cos(alpha)+r_ext)).append(",");
+        result.append(QString::number(r_foot*std::sin(alpha)+r_ext)).append(" ");
+
+        for(int i=toothSide.size()-1; i >= 0; i--)
+        {
+            Point p = toothSide[i];
+            result.append("L");
+            result.append(QString::number(p.y * std::cos(alpha - p.x)+r_ext)).append(", ");
+            result.append(QString::number(p.y * std::sin(alpha - p.x)+r_ext)).append(" ");
+        }
+        alpha = alpha0 + 2*PI/numberOfTeeth;
+    }
+    result.append("Z\"/>\n");
+    result.append("</g>\n");
+
+    // Lightening holes
+    r_ext = this->primitiveRadius - m - std::max(this->holeRadius*2.0, (double)this->armWidth);
+    float r_int = std::max(this->holeRadius*2.0, this->armWidth * 1.25);
+    float begin_ext = std::asin(this->armWidth/2/r_ext);
+    float end_ext = 2*PI/this->numberOfLighteningHole - std::asin(this->armWidth/2/r_ext);
+    float begin_int = std::asin(this->armWidth/2/r_int);
+    float end_int = 2*PI/this->numberOfLighteningHole - std::asin(this->armWidth/2/r_int);
+    result.append("<g class=\"lighteningHoles\">\n");
+    alpha = 0;
+    for(int i=0; i<numberOfLighteningHole; i++)
+    {
+        result.append("<path stroke=\"black\" stroke-width=\"1px\" fill=\"none\" d=\"M");
+        result.append(QString::number(r_int*std::cos(alpha+begin_int)+externalRadius)).append(",");
+        result.append(QString::number(r_int*std::sin(alpha+begin_int)+externalRadius)).append(" ");
+        result.append("A").append(QString::number(r_int)).append(",").append(QString::number(r_int)).append(" ");
+        result.append("0 0,1 ").append(QString::number(r_int*std::cos(alpha+end_int)+externalRadius)).append(",");
+        result.append(QString::number(r_int*std::sin(alpha+end_int)+externalRadius)).append(" ");
+
+        result.append("L").append(QString::number(r_ext*std::cos(alpha+end_ext)+externalRadius)).append(",");
+        result.append(QString::number(r_ext*std::sin(alpha+end_ext)+externalRadius)).append(" ");
+
+        result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(" ");
+        result.append("0 0,0 ").append(QString::number(r_ext*std::cos(alpha+begin_ext)+externalRadius)).append(",");
+        result.append(QString::number(r_ext*std::sin(alpha+begin_ext)+externalRadius)).append(" ");
+
+        result.append("Z\"/>\n");
+
+        alpha += 2*PI/numberOfLighteningHole;
+    }
+    result.append("</g>\n");
+
+    // Center hole
+    result.append("<circle cx=\"").append(QString::number(externalRadius)).append("\" ");
+    result.append("cy=\"").append(QString::number(externalRadius)).append("\" ");
+    result.append("r=\"").append(QString::number(holeRadius)).append("\" ");
+    result.append("stroke=\"black\" stroke-width=\"1px\" fill=\"none\" />\n");
+
+    result.append("<path stroke=\"black\" stroke-width=\"1px\" fill=\"none\" d=\"M");
+    result.append(QString::number(externalRadius-1.5*holeRadius)).append(",");
+    result.append(QString::number(externalRadius)).append(" H");
+    result.append(QString::number(externalRadius+1.5*holeRadius)).append(" M");
+    result.append(QString::number(externalRadius)).append(",");
+    result.append(QString::number(externalRadius-1.5*holeRadius)).append(" V");
+    result.append(QString::number(externalRadius+1.5*holeRadius)).append("\" />\n");
+
+    result.append("</g>\n");
+    result.append("</svg>\n");
+    return result;
 }
 
 }
