@@ -39,4 +39,6 @@ FORMS    += mainwindow.ui \
     exportdialog.ui
 
 DISTFILES += \
-    LICENSE
+    LICENSE \
+    icon.png \
+    gearFactoryIco.svg

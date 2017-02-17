@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Gear Factory</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon.png</normaloff>icon.png</iconset>
+  </property>
   <property name="documentMode">
    <bool>false</bool>
   </property>
