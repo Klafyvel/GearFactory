@@ -90,7 +90,7 @@ void WheelWidget::drawWheel()
     wheel::Point center = wheelCreator.getPositionOffset();
     if(showLineOfContact)
     {
-        float a = 1/std::tan(wheelCreator.getContactAngle());
+        float a = -1/std::tan(wheelCreator.getContactAngle());
         float b = wheelCreator.getPrimitiveRadius();
 
         scene->addLine(b/2+center.x,a*b/2+center.y,3.0/2.0*b+center.x,-a*b/2+center.y, currentPen);
