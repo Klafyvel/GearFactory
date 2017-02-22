@@ -194,7 +194,10 @@ void MainWindow::manageView()
     }
     else
     {
-        ui->graphicsView->fitInView(firstWheel->fullSize(), Qt::KeepAspectRatio);
+        QRect rect = firstWheel->fullSize();
+        rect.setTop(-rect.height()/2);
+        rect.setLeft(-rect.width()/2);
+        ui->graphicsView->fitInView(rect, Qt::KeepAspectRatio);
     }
     firstWheel->askForRedraw();
 }

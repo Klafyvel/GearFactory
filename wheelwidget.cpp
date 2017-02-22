@@ -90,10 +90,10 @@ void WheelWidget::drawWheel()
     wheel::Point center = wheelCreator.getPositionOffset();
     if(showLineOfContact)
     {
-        float a = -1/std::tan(wheelCreator.getContactAngle());
+        float a = 1/std::tan(wheelCreator.getContactAngle());
         float b = wheelCreator.getPrimitiveRadius();
 
-        scene->addLine(b/2+center.x,a*b/2+center.y,3.0/2.0*b+center.x,-a*b/2+center.y, currentPen);
+        scene->addLine(3.0*b/4+center.x,a*(3.0*b/4-b)+center.y,5.0/4*b+center.x,a*(5.0*b/4-b)+center.y, currentPen);
     }
 
     std::vector<wheel::Point> points = wheelCreator.getPoints();
