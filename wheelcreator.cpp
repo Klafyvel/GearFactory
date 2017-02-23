@@ -325,7 +325,7 @@ float WheelCreator::getArmWidth() const
     return this->armWidth;
 }
 
-QString WheelCreator::svg(int i)
+QString WheelCreator::svg(Point offset, int i)
 {
     float m = this->toothSpacing / PI;
     float r_base = this->primitiveRadius * cos(this->contactAngle);
@@ -337,62 +337,52 @@ QString WheelCreator::svg(int i)
 
     std::vector<Point> toothSide = WheelCreator::toothProfile();
 
-    QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
-    result.append("<svg width=\"");
-    result.append(QString::number(r_ext*2));
-    result.append("mm\" height=\"");
-    result.append(QString::number(r_ext*2));
-    result.append("mm\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
-    result.append(" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 ");
-    result.append(QString::number(r_ext*2)).append(" ");
-    result.append(QString::number(r_ext*2)).append("\" >\n");
-    result.append("<title>Gear factory</title>\n");
-    result.append("<desc>File created by Gear Factory.</desc>\n");
-
-    result.append("<g class=\"wheel\" id=\"wheel");
+    QString result = "";
+    result.append("<g stroke=\"black\" stroke-width=\"0.5\" fill=\"none\" class=\"wheel\" id=\"wheel");
     result.append(QString::number(i+1));
-    result.append("\">\n");
+    result.append("\" transform=\"translate(");
+    result.append(QString::number(offset.x)).append(",");
+    result.append(QString::number(offset.y)).append(")\">\n");
 
     // Tooth
     result.append("<g class=\"frame\">\n");
     float alpha = -top_max;
-    result.append("<path stroke=\"black\" stroke-width=\"1px\" fill=\"none\" d=\"M");
-    result.append(QString::number(r_ext*std::cos(alpha)+r_ext)).append(",").append(QString::number(r_ext*std::sin(alpha)+r_ext)).append(" ");
+    result.append("<path d=\"M");
+    result.append(QString::number(r_ext*std::cos(alpha))).append(",").append(QString::number(r_ext*std::sin(alpha))).append(" ");
     for(int n=0; n<numberOfTeeth; n++)
     {
         float alpha0 = alpha;
         alpha += 2*top_max;
         result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(" ");
-        result.append("0 0,1 ").append(QString::number(r_ext*cos(alpha)+r_ext)).append(",");
-        result.append(QString::number(r_ext*sin(alpha)+r_ext)).append(" ");
+        result.append("0 0,1 ").append(QString::number(r_ext*cos(alpha))).append(",");
+        result.append(QString::number(r_ext*sin(alpha))).append(" ");
 
         alpha += std::tan(tooth_domain_max) - tooth_domain_max;
 
         for(Point p : toothSide)
         {
             result.append("L");
-            result.append(QString::number(p.y * std::cos(alpha + p.x)+r_ext)).append(",");
-            result.append(QString::number(p.y * std::sin(alpha + p.x)+r_ext)).append(" ");
+            result.append(QString::number(p.y * std::cos(alpha + p.x))).append(",");
+            result.append(QString::number(p.y * std::sin(alpha + p.x))).append(" ");
         }
 
-        result.append("L").append(QString::number(r_foot*std::cos(alpha)+r_ext));
-        result.append(",").append(QString::number(r_foot*std::sin(alpha)+r_ext)).append(" ");
+        result.append("L").append(QString::number(r_foot*std::cos(alpha)));
+        result.append(",").append(QString::number(r_foot*std::sin(alpha))).append(" ");
         alpha = alpha0 + 2*PI/numberOfTeeth - deport+top_max;
         result.append("A").append(QString::number(r_foot)).append(",").append(QString::number(r_foot)).append(" ");
-        result.append("0 0,1").append(QString::number(r_foot*std::cos(alpha)+r_ext)).append(",");
-        result.append(QString::number(r_foot*std::sin(alpha)+r_ext)).append(" ");
+        result.append("0 0,1").append(QString::number(r_foot*std::cos(alpha))).append(",");
+        result.append(QString::number(r_foot*std::sin(alpha))).append(" ");
 
         for(int i=toothSide.size()-1; i >= 0; i--)
         {
             Point p = toothSide[i];
             result.append("L");
-            result.append(QString::number(p.y * std::cos(alpha - p.x)+r_ext)).append(", ");
-            result.append(QString::number(p.y * std::sin(alpha - p.x)+r_ext)).append(" ");
+            result.append(QString::number(p.y * std::cos(alpha - p.x))).append(", ");
+            result.append(QString::number(p.y * std::sin(alpha - p.x))).append(" ");
         }
         alpha = alpha0 + 2*PI/numberOfTeeth;
     }
-    result.append("Z\"/>\n");
-    result.append("</g>\n");
+    result.append("Z\"/>\n</g>\n");
 
     // Lightening holes
     r_ext = this->primitiveRadius - m - std::max(this->holeRadius*2.0, (double)this->armWidth);
@@ -405,42 +395,34 @@ QString WheelCreator::svg(int i)
     alpha = 0;
     for(int i=0; i<numberOfLighteningHole; i++)
     {
-        result.append("<path stroke=\"black\" stroke-width=\"1px\" fill=\"none\" d=\"M");
-        result.append(QString::number(r_int*std::cos(alpha+begin_int)+externalRadius)).append(",");
-        result.append(QString::number(r_int*std::sin(alpha+begin_int)+externalRadius)).append(" ");
+        result.append("<path d=\"M");
+        result.append(QString::number(r_int*std::cos(alpha+begin_int))).append(",");
+        result.append(QString::number(r_int*std::sin(alpha+begin_int))).append(" ");
         result.append("A").append(QString::number(r_int)).append(",").append(QString::number(r_int)).append(" ");
-        result.append("0 0,1 ").append(QString::number(r_int*std::cos(alpha+end_int)+externalRadius)).append(",");
-        result.append(QString::number(r_int*std::sin(alpha+end_int)+externalRadius)).append(" ");
+        result.append("0 0,1 ").append(QString::number(r_int*std::cos(alpha+end_int))).append(",");
+        result.append(QString::number(r_int*std::sin(alpha+end_int))).append(" ");
 
-        result.append("L").append(QString::number(r_ext*std::cos(alpha+end_ext)+externalRadius)).append(",");
-        result.append(QString::number(r_ext*std::sin(alpha+end_ext)+externalRadius)).append(" ");
+        result.append("L").append(QString::number(r_ext*std::cos(alpha+end_ext))).append(",");
+        result.append(QString::number(r_ext*std::sin(alpha+end_ext))).append(" ");
 
         result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(" ");
-        result.append("0 0,0 ").append(QString::number(r_ext*std::cos(alpha+begin_ext)+externalRadius)).append(",");
-        result.append(QString::number(r_ext*std::sin(alpha+begin_ext)+externalRadius)).append(" ");
-
-        result.append("Z\"/>\n");
+        result.append("0 0,0 ").append(QString::number(r_ext*std::cos(alpha+begin_ext))).append(",");
+        result.append(QString::number(r_ext*std::sin(alpha+begin_ext))).append(" Z\"/>\n");
 
         alpha += 2*PI/numberOfLighteningHole;
     }
     result.append("</g>\n");
 
     // Center hole
-    result.append("<circle cx=\"").append(QString::number(externalRadius)).append("\" ");
-    result.append("cy=\"").append(QString::number(externalRadius)).append("\" ");
-    result.append("r=\"").append(QString::number(holeRadius)).append("\" ");
-    result.append("stroke=\"black\" stroke-width=\"1px\" fill=\"none\" />\n");
+    result.append("<circle cx=\"0\" cy=\"0\" r=\"").append(QString::number(holeRadius)).append("\"/>\n");
 
-    result.append("<path stroke=\"black\" stroke-width=\"1px\" fill=\"none\" d=\"M");
-    result.append(QString::number(externalRadius-1.5*holeRadius)).append(",");
-    result.append(QString::number(externalRadius)).append(" H");
-    result.append(QString::number(externalRadius+1.5*holeRadius)).append(" M");
-    result.append(QString::number(externalRadius)).append(",");
-    result.append(QString::number(externalRadius-1.5*holeRadius)).append(" V");
-    result.append(QString::number(externalRadius+1.5*holeRadius)).append("\" />\n");
+    result.append("<path d=\"M");
+    result.append(QString::number(-1.5*holeRadius)).append(",0 H");
+    result.append(QString::number(+1.5*holeRadius)).append(" M0,");
+    result.append(QString::number(-1.5*holeRadius)).append(" V");
+    result.append(QString::number(+1.5*holeRadius)).append("\" />\n");
 
     result.append("</g>\n");
-    result.append("</svg>\n");
     return result;
 }
 

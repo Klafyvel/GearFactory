@@ -266,90 +266,30 @@ void WheelWidget::setShowExternalCircle(bool st)
 
 void WheelWidget::exportSVG(QString filename)
 {
-    /*
     float r_ext = wheelCreator.getExternalRadius();
     QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
     result.append("<svg width=\"");
-    result.append(QString::number(r_ext*2));
+    result.append(QString::number(2*r_ext+5));
     result.append("mm\" height=\"");
-    result.append(QString::number(r_ext*2));
-    result.append("mm\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"  version=\"1.2\" baseProfile=\"tiny\">\n");
+    result.append(QString::number(2*r_ext+10));
+    result.append("mm\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
+    result.append(" version=\"1.2\" baseProfile=\"tiny\" viewBox=\"0 0 ");
+    result.append(QString::number(2*r_ext+5)).append(" ");
+    result.append(QString::number(2*r_ext+10)).append("\" >\n");
     result.append("<title>Gear factory</title>\n");
     result.append("<desc>File created by Gear Factory.</desc>\n");
 
-    result.append("<g class=\"wheel\" id=\"wheel");
-    result.append(QString::number(i+1));
-    result.append(">\n");
+    result.append(wheelCreator.svg(wheel::Point(r_ext+2.5, r_ext+2.5),i));
 
-    // Tooth
-    result.append("<g class=\"frame\">\n");
-    wheel::Point previous;
-    wheel::Point first;
-    bool isFirst = true;
-    for(wheel::Point p : wheelCreator.getPoints())
-    {
-        if(isFirst)
-        {
-            isFirst = false;
-            first = p;
-        }
-        else
-        {
-            result.append("<line x1=\"");
-            result.append(QString::number(previous.x + r_ext));
-            result.append("mm\" y1=\"");
-            result.append(QString::number(previous.y + r_ext));
-            result.append("mm\" x2=\"");
-            result.append(QString::number(p.x + r_ext));
-            result.append("mm\" y2=\"");
-            result.append(QString::number(p.y + r_ext));
-            result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
-        }
-
-        previous = p;
-    }
-    result.append("<line x1=\"");
-    result.append(QString::number(previous.x + r_ext));
-    result.append("mm\" y1=\"");
-    result.append(QString::number(previous.y + r_ext));
-    result.append("mm\" x2=\"");
-    result.append(QString::number(first.x + r_ext));
-    result.append("mm\" y2=\"");
-    result.append(QString::number(first.y + r_ext));
-    result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
+    result.append("<g transform=\"translate(2.5,").append(QString::number(2*r_ext+7));
+    result.append(")\" style=\"font-size:1mm\" class=\"wheelDescr\" id=\"descrWheel").append(QString::number(i)).append("\">\n");
+    result.append("<text>Tooth spacing : ").append(QString::number(wheelCreator.getToothSpacing())).append("mm ");
+    result.append("Primitive radius : ").append(QString::number(wheelCreator.getPrimitiveRadius())).append("mm ");
+    result.append("External radius : ").append(QString::number(wheelCreator.getExternalRadius())).append("mm ");
+    result.append("Number of teeth : ").append(QString::number(wheelCreator.getNumberOfTeeth())).append("</text>\n");
     result.append("</g>\n");
 
-    // Center
-    result.append("<circle cx=\"");
-    result.append(QString::number(r_ext));
-    result.append("mm\" cy=\"");
-    result.append(QString::number(r_ext));
-    result.append("mm\" r=\"");
-    result.append(QString::number(wheelCreator.getHoleRadius()));
-    result.append("mm\" stroke=\"black\" fill=\"none\"/>\n");
-
-    result.append("<line x1=\"");
-    result.append(QString::number(r_ext));
-    result.append("mm\" y1=\"");
-    result.append(QString::number(r_ext-1.5*wheelCreator.getHoleRadius()));
-    result.append("mm\" x2=\"");
-    result.append(QString::number(r_ext));
-    result.append("mm\" y2=\"");
-    result.append(QString::number(r_ext+1.5*wheelCreator.getHoleRadius()));
-    result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
-    result.append("<line x1=\"");
-    result.append(QString::number(r_ext-1.5*wheelCreator.getHoleRadius()));
-    result.append("mm\" y1=\"");
-    result.append(QString::number(r_ext));
-    result.append("mm\" x2=\"");
-    result.append(QString::number(r_ext+1.5*wheelCreator.getHoleRadius()));
-    result.append("mm\" y2=\"");
-    result.append(QString::number(r_ext));
-    result.append("mm\" style=\"stroke:rgb(0,0,0); stroke-width:1px\"/>\n");
-
-    result.append("</g>\n");
     result.append("</svg>\n");
-    */
     // Export
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -358,7 +298,7 @@ void WheelWidget::exportSVG(QString filename)
         return;
     }
     QTextStream out(&file);
-    out << wheelCreator.svg(i);
+    out << result;
 }
 
 void WheelWidget::setNext(WheelWidget *next)
