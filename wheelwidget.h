@@ -75,6 +75,7 @@ public slots:
     void rotate(double step);
     void setDrawing(bool st);
     void setStacked(int i);
+    void setRotationTrigo(bool r);
 
     void exportWheel();
 
@@ -98,6 +99,7 @@ private:
     bool showLineOfContact;
     bool showPrimitiveCircle;
     bool showExternalCircle;
+    bool rotateTrigo;
 
     int i;
     QTabWidget* tab;

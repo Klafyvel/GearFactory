@@ -38,6 +38,7 @@ WheelWidget::WheelWidget(QGraphicsScene *scene, QTabWidget* tab, int i, float co
     drawing = true;
     this->tab = tab;
     currentPen = QPen();
+    rotateTrigo = true;
     WheelWidget::setNoFocusPen();
 }
 
@@ -91,10 +92,12 @@ void WheelWidget::drawWheel()
     if(showLineOfContact)
     {
         float r = wheelCreator.getBaseRadius();
-        if(next)
+        if(next && !next->ui->stackedCheckBox->isChecked())
         {
             float alpha = wheelCreator.getContactAngle();
             float a = 1/std::tan(alpha);
+            if(!rotateTrigo)
+                a *= -1;
             float b = wheelCreator.getPrimitiveRadius();
             float r2 = next->wheelCreator.getBaseRadius();
             float b2 = next->wheelCreator.getPrimitiveRadius();
@@ -144,9 +147,18 @@ void WheelWidget::drawWheel()
 void WheelWidget::setStacked(int i)
 {
     WheelWidget::refreshGearsValues();
+    std::cout << i << std::endl;
     if(previous)
     {
         previous->setNumberOfLighteningHoles(0);
+        if(i)
+            rotateTrigo = previous->rotateTrigo;
+        else
+            rotateTrigo = !previous->rotateTrigo;
+    }
+    if(next)
+    {
+        next->setRotationTrigo(!rotateTrigo);
     }
     WheelWidget::setNumberOfLighteningHoles(0);
 }
@@ -246,6 +258,18 @@ void WheelWidget::setArmWidth(double w)
 void WheelWidget::setRotation(double alpha)
 {
     wheelCreator.setRotationOffset(alpha);
+}
+
+void WheelWidget::setRotationTrigo(bool r)
+{
+    rotateTrigo = r;
+    if(next)
+    {
+        if(next->ui->stackedCheckBox->isChecked())
+            next->setRotationTrigo(r);
+        else
+            next->setRotationTrigo(!r);
+    }
 }
 
 void WheelWidget::rotate(double step)
@@ -359,6 +383,7 @@ void WheelWidget::addWheel()
     tab->insertTab(i+1, next, QString("Wheel ").append(QString::number(i+2)));
     next->incrI();
     next->ui->stackedCheckBox->setChecked(false);
+    WheelWidget::setRotationTrigo(rotateTrigo);
     WheelWidget::refreshGearsValues();
     QObject::connect(next, SIGNAL(redraw()), this, SLOT(askForRedraw()));
     QObject::connect(next->ui->deletePushButton, SIGNAL(clicked()), this, SLOT(delWheel()));
@@ -413,6 +438,7 @@ void WheelWidget::delWheel()
         next->decrI();
     }
     delete toBeDeleted;
+    WheelWidget::setRotationTrigo(rotateTrigo);
     WheelWidget::refreshGearsValues();
 }
 
