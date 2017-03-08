@@ -68,6 +68,7 @@ public:
     float getRotationOffset() const;
     float getClearance() const;
     float getArmWidth() const;
+    float getBaseRadius() const;
 
     // Setters
     void setPrimitiveRadius(float r);

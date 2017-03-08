@@ -74,6 +74,12 @@ float WheelCreator::getClearance() const
 {
     return this->clearance;
 }
+
+float WheelCreator::getBaseRadius() const
+{
+    return this->primitiveRadius * cos(this->contactAngle);
+}
+
 std::vector<Point> WheelCreator::toothProfile() const
 {
     std::vector<Point> result(0);
