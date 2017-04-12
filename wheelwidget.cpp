@@ -129,7 +129,7 @@ void WheelWidget::drawWheel()
         scene->addEllipse(center.x - r, center.y - r, r*2, r*2, currentPen);
 }
 
-void WheelWidget::setStacked(int i)
+void WheelWidget::setStacked(int)
 {
     WheelWidget::refreshGearsValues();
     if(previous)
