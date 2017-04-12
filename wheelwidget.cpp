@@ -267,7 +267,7 @@ void WheelWidget::setShowExternalCircle(bool st)
 void WheelWidget::exportSVG(QString filename)
 {
     float r_ext = wheelCreator.getExternalRadius();
-    QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>";
+    QString result = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
     result.append("<svg width=\"");
     result.append(QString::number(2*r_ext+5));
     result.append("mm\" height=\"");
