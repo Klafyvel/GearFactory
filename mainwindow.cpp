@@ -181,7 +181,7 @@ void MainWindow::centerView(int i)
     ui->graphicsView->fitInView(currentWheel->boundingRect(), Qt::KeepAspectRatio);
 }
 
-void MainWindow::handleViewCenter(int id)
+void MainWindow::handleViewCenter(int)
 {
     MainWindow::manageView();
 }
