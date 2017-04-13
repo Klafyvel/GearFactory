@@ -354,14 +354,14 @@ QString WheelCreator::svg(Point offset, int i)
     result.append("<g class=\"frame\">\n");
     float alpha = -top_max;
     result.append("<path d=\"M");
-    result.append(QString::number(r_ext*std::cos(alpha))).append(",").append(QString::number(r_ext*std::sin(alpha))).append(" ");
+    result.append(QString::number(r_ext*std::cos(alpha))).append(",").append(QString::number(r_ext*std::sin(alpha)));
     for(int n=0; n<numberOfTeeth; n++)
     {
         float alpha0 = alpha;
         alpha += 2*top_max;
-        result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(" ");
-        result.append("0 0,1 ").append(QString::number(r_ext*cos(alpha))).append(",");
-        result.append(QString::number(r_ext*sin(alpha))).append(" ");
+        result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(",");
+        result.append("0,0,1,").append(QString::number(r_ext*cos(alpha))).append(",");
+        result.append(QString::number(r_ext*sin(alpha)));
 
         alpha += std::tan(tooth_domain_max) - tooth_domain_max;
 
@@ -369,22 +369,22 @@ QString WheelCreator::svg(Point offset, int i)
         {
             result.append("L");
             result.append(QString::number(p.y * std::cos(alpha + p.x))).append(",");
-            result.append(QString::number(p.y * std::sin(alpha + p.x))).append(" ");
+            result.append(QString::number(p.y * std::sin(alpha + p.x)));
         }
 
         result.append("L").append(QString::number(r_foot*std::cos(alpha)));
-        result.append(",").append(QString::number(r_foot*std::sin(alpha))).append(" ");
+        result.append(",").append(QString::number(r_foot*std::sin(alpha)));
         alpha = alpha0 + 2*PI/numberOfTeeth - deport+top_max;
-        result.append("A").append(QString::number(r_foot)).append(",").append(QString::number(r_foot)).append(" ");
-        result.append("0 0,1").append(QString::number(r_foot*std::cos(alpha))).append(",");
-        result.append(QString::number(r_foot*std::sin(alpha))).append(" ");
+        result.append("A").append(QString::number(r_foot)).append(",").append(QString::number(r_foot)).append(",");
+        result.append("0,0,1").append(QString::number(r_foot*std::cos(alpha))).append(",");
+        result.append(QString::number(r_foot*std::sin(alpha)));
 
         for(int i=toothSide.size()-1; i >= 0; i--)
         {
             Point p = toothSide[i];
             result.append("L");
-            result.append(QString::number(p.y * std::cos(alpha - p.x))).append(", ");
-            result.append(QString::number(p.y * std::sin(alpha - p.x))).append(" ");
+            result.append(QString::number(p.y * std::cos(alpha - p.x))).append(",");
+            result.append(QString::number(p.y * std::sin(alpha - p.x)));
         }
         alpha = alpha0 + 2*PI/numberOfTeeth;
     }
@@ -403,16 +403,16 @@ QString WheelCreator::svg(Point offset, int i)
     {
         result.append("<path d=\"M");
         result.append(QString::number(r_int*std::cos(alpha+begin_int))).append(",");
-        result.append(QString::number(r_int*std::sin(alpha+begin_int))).append(" ");
-        result.append("A").append(QString::number(r_int)).append(",").append(QString::number(r_int)).append(" ");
-        result.append("0 0,1 ").append(QString::number(r_int*std::cos(alpha+end_int))).append(",");
+        result.append(QString::number(r_int*std::sin(alpha+begin_int)));
+        result.append("A").append(QString::number(r_int)).append(",").append(QString::number(r_int)).append(",");
+        result.append("0,0,1,").append(QString::number(r_int*std::cos(alpha+end_int))).append(",");
         result.append(QString::number(r_int*std::sin(alpha+end_int))).append(" ");
 
         result.append("L").append(QString::number(r_ext*std::cos(alpha+end_ext))).append(",");
-        result.append(QString::number(r_ext*std::sin(alpha+end_ext))).append(" ");
+        result.append(QString::number(r_ext*std::sin(alpha+end_ext)));
 
-        result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(" ");
-        result.append("0 0,0 ").append(QString::number(r_ext*std::cos(alpha+begin_ext))).append(",");
+        result.append("A").append(QString::number(r_ext)).append(",").append(QString::number(r_ext)).append(",");
+        result.append("0,0,0,").append(QString::number(r_ext*std::cos(alpha+begin_ext))).append(",");
         result.append(QString::number(r_ext*std::sin(alpha+begin_ext))).append(" Z\"/>\n");
 
         alpha += 2*PI/numberOfLighteningHole;
@@ -423,9 +423,9 @@ QString WheelCreator::svg(Point offset, int i)
     result.append("<circle cx=\"0\" cy=\"0\" r=\"").append(QString::number(holeRadius)).append("\"/>\n");
 
     result.append("<path d=\"M");
-    result.append(QString::number(-1.5*holeRadius)).append(",0 H");
-    result.append(QString::number(+1.5*holeRadius)).append(" M0,");
-    result.append(QString::number(-1.5*holeRadius)).append(" V");
+    result.append(QString::number(-1.5*holeRadius)).append(",0H");
+    result.append(QString::number(+1.5*holeRadius)).append("M0,");
+    result.append(QString::number(-1.5*holeRadius)).append("V");
     result.append(QString::number(+1.5*holeRadius)).append("\" />\n");
 
     result.append("</g>\n");
